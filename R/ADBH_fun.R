@@ -318,8 +318,10 @@ kernel.ADBH.fast <- function(msg = "", stepf, pv.numer, pv.denom, bigMem = FALSE
 #'
 #'ADBH.su.fast <- ADBH(pCDFlist, raw.pvalues)
 #'ADBH.sd.fast <- ADBH(pCDFlist, raw.pvalues, direction="sd")
+#'ADBH.sd.fast$Adjusted
 #'ADBH.su.crit <- ADBH(pCDFlist, raw.pvalues, ret.crit.consts=TRUE)
 #'ADBH.sd.crit <- ADBH(pCDFlist, raw.pvalues, direction="sd", ret.crit.consts=TRUE)
+#'ADBH.sd.crit$Adjusted
 #'
 #'@templateVar DBR FALSE
 #'@template return

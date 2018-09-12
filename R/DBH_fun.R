@@ -136,8 +136,10 @@ kernel.DBH <- function(msg = "", stepf, pv.numer, pv.denom, bigMem = FALSE, verb
 #'
 #'DBH.su.fast <- DBH(pCDFlist, raw.pvalues)
 #'DBH.sd.fast <- DBH(pCDFlist, raw.pvalues, direction="sd")
+#'DBH.sd.fast$Adjusted
 #'DBH.su.crit <- DBH(pCDFlist, raw.pvalues, ret.crit.consts=TRUE)
 #'DBH.sd.crit <- DBH(pCDFlist, raw.pvalues, direction="sd", ret.crit.consts=TRUE)
+#'DBH.sd.crit$Adjusted
 #'
 #'@templateVar DBR FALSE
 #'@template return

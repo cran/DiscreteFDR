@@ -237,7 +237,15 @@ kernel.DBR.fast <- function(msg = "", stepf, pv.numer, lambda, bigMem = FALSE, v
 #'to a set of p-values and their discrete support.
 #'
 #'@details
-#'This version: 2018-02-19.
+#'
+#'[DBR-lambda] is the discrete version of the [Blanchard-Roquain-lambda] procedure (see References),
+#'the authors of the latter suggest to take \code{lambda=alpha} (see their Proposition 17),
+#'which explains the choice of the default value here. 
+#'
+#'This version: 2018-09-05.
+#'
+#'@section References:
+#'G. Blanchard and E. Roquain (2009). Adaptive false discovery rate control under independence and dependence. Journal of Machine Learning Research, 10, 2837-2871.
 #'
 #'@templateVar msg FALSE
 #'@templateVar stepf FALSE
@@ -267,8 +275,13 @@ kernel.DBR.fast <- function(msg = "", stepf, pv.numer, lambda, bigMem = FALSE, v
 #'
 #'@name DBR
 #'@export
-DBR <- function(pCDFlist, raw.pvalues, alpha = 0.05, lambda = 0.05, ret.crit.consts = FALSE, bigMem = FALSE, verbose = FALSE){
+DBR <- function(pCDFlist, raw.pvalues, alpha = 0.05, lambda = NULL, ret.crit.consts = FALSE, bigMem = FALSE, verbose = FALSE){
   m <- length(raw.pvalues)
+  # if lambda is not provided (lambda = NULL),
+  # set lambda = alpha
+  if (is.null(lambda)){
+    lambda <- alpha
+  }
   #--------------------------------------------
   #       prepare p-values for processing
   #--------------------------------------------

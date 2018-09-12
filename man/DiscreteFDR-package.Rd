@@ -25,6 +25,10 @@ such p-values and support in the framework of a Fisher's
 exact test of association. It has been inspired by an help
 page of the package \code{\link[discreteMTP]{discreteMTP}}.
 
+The function \code{\link{fast.Discrete}} is a wrapper for \code{\link{fisher.pvalues.support}}
+and  \code{\link{DBH}} (or  \code{\link{ADBH}}) which allows to apply discrete procedures
+directly to a data set of contingency tables.
+
 We also provide the \code{\link{amnesia}} data set, used in 
 our examples and in our paper. It is basically the \code{\link[discreteMTP]{amnesia}} data set
 of package \code{\link[discreteMTP]{discreteMTP}}, but slightly reformatted (the difference lies in column 3).

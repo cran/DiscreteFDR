@@ -19,7 +19,7 @@ kernel.DBR.fast(msg = "", stepf, pv.numer, lambda, bigMem = FALSE,
 
 \item{pv.numer}{a numeric vector. Contains all values of the p-values supports if we search for the critical constants. If not, contains only the observed p-values. Must be in increasing order.}
 
-\item{lambda}{a number strictly between 0 and 1.}
+\item{lambda}{a number strictly between 0 and 1. If \code{lambda=NULL} (by default), then \code{lambda} is chosen equal to \code{alpha}.}
 
 \item{alpha}{the target FDR level, a number strictly between 0 and 1.}
 
@@ -60,15 +60,18 @@ with \code{\link{DBH}}. This is why \code{sorted.pv} is needed.
 This version: 2018-02-20.
 }
 \examples{
-data(amnesia)
-
-#We only keep the first 100 lines to keep the computations fast.
-amnesia<-amnesia[1:100,]
-
+X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
+X2 <- c(0, 0, 1, 3, 2, 1, 2, 2, 2)
+N1 <- rep(148, 9)
+N2 <- rep(132, 9)
+Y1 <- N1-X1
+Y2 <- N2-X2
+df <- data.frame(X1,Y1,X2,Y2)
+df
 #Construction of the p-values and their support
-amnesia.formatted <- fisher.pvalues.support(amnesia)
-raw.pvalues <- amnesia.formatted$raw
-pCDFlist <- amnesia.formatted$support
+df.formatted <- fisher.pvalues.support(counts = df, input = "noassoc")
+raw.pvalues <- df.formatted$raw
+pCDFlist <- df.formatted$support
 
 m <- length(raw.pvalues)
 alpha <- 0.05

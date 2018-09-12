@@ -4,7 +4,7 @@
 \alias{DBR}
 \title{[DBR-lambda] procedure}
 \usage{
-DBR(pCDFlist, raw.pvalues, alpha = 0.05, lambda = 0.05,
+DBR(pCDFlist, raw.pvalues, alpha = 0.05, lambda = NULL,
   ret.crit.consts = FALSE, bigMem = FALSE, verbose = FALSE)
 }
 \arguments{
@@ -14,7 +14,7 @@ DBR(pCDFlist, raw.pvalues, alpha = 0.05, lambda = 0.05,
 
 \item{alpha}{the target FDR level, a number strictly between 0 and 1.}
 
-\item{lambda}{a number strictly between 0 and 1.}
+\item{lambda}{a number strictly between 0 and 1. If \code{lambda=NULL} (by default), then \code{lambda} is chosen equal to \code{alpha}.}
 
 \item{ret.crit.consts}{a boolean. If \code{TRUE}, critical constants are computed and returned (this is computationally intensive).}
 
@@ -38,18 +38,30 @@ with or without computing the critical constants,
 to a set of p-values and their discrete support.
 }
 \details{
-This version: 2018-02-19.
+[DBR-lambda] is the discrete version of the [Blanchard-Roquain-lambda] procedure (see References),
+the authors of the latter suggest to take \code{lambda=alpha} (see their Proposition 17),
+which explains the choice of the default value here. 
+
+This version: 2018-09-05.
 }
+\section{References}{
+
+G. Blanchard and E. Roquain (2009). Adaptive false discovery rate control under independence and dependence. Journal of Machine Learning Research, 10, 2837-2871.
+}
+
 \examples{
-data(amnesia)
-
-#We only keep the first 100 lines to keep the computations fast.
-amnesia<-amnesia[1:100,]
-
+X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
+X2 <- c(0, 0, 1, 3, 2, 1, 2, 2, 2)
+N1 <- rep(148, 9)
+N2 <- rep(132, 9)
+Y1 <- N1-X1
+Y2 <- N2-X2
+df <- data.frame(X1,Y1,X2,Y2)
+df
 #Construction of the p-values and their support
-amnesia.formatted <- fisher.pvalues.support(amnesia)
-raw.pvalues <- amnesia.formatted$raw
-pCDFlist <- amnesia.formatted$support
+df.formatted <- fisher.pvalues.support(counts = df, input = "noassoc")
+raw.pvalues <- df.formatted$raw
+pCDFlist <- df.formatted$support
 
 DBR.su.fast <- DBR(pCDFlist, raw.pvalues)
 DBR.su.crit <- DBR(pCDFlist, raw.pvalues, ret.crit.consts=TRUE)

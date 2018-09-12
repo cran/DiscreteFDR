@@ -24,8 +24,8 @@ reference paper, see \code{\link{DiscreteFDR}}.
 This version: 2017-09-09.
 }
 \examples{
-toyList<-list(c(0.3,0.7,1),c(0.1,0.65,1))
-toyStep<-build.stepfuns(toyList)
+toyList <- list(c(0.3,0.7,1),c(0.1,0.65,1))
+toyStep <- build.stepfuns(toyList)
 toyStep[[1]](0.2)
 toyStep[[2]](0.2)
 toyStep[[1]](0.65)

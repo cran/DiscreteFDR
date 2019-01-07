@@ -22,16 +22,13 @@
 #'This version: 2017-08-16.
 #'
 #'@seealso
-#'\code{\link{DBH}}, \code{\link{ADBH}}, \code{\link{DBR}}
+#'\code{\link{discrete.BH}}, \code{\link{DBR}}
 #'
-#'@templateVar msg FALSE
 #'@templateVar stepf FALSE
 #'@templateVar pv.numer FALSE
 #'@templateVar pv.denom FALSE
 #'@templateVar alpha FALSE
 #'@templateVar sorted.pv FALSE
-#'@templateVar bigMem FALSE
-#'@templateVar verbose FALSE
 #'@templateVar pCDFlist TRUE
 #'@templateVar raw.pvalues TRUE
 #'@templateVar direction FALSE
@@ -89,14 +86,14 @@ match.pvals <- function(pCDFlist, raw.pvalues){
 #'
 #'This version: 2017-09-09.
 #'
-#'@templateVar msg FALSE
+#'@seealso
+#'\code{\link{discrete.BH}}, \code{\link{DBR}}
+#'
 #'@templateVar stepf FALSE
 #'@templateVar pv.numer FALSE
 #'@templateVar pv.denom FALSE
 #'@templateVar alpha FALSE
 #'@templateVar sorted.pv FALSE
-#'@templateVar bigMem FALSE
-#'@templateVar verbose FALSE
 #'@templateVar pCDFlist TRUE
 #'@templateVar raw.pvalues FALSE
 #'@templateVar direction FALSE
@@ -143,14 +140,14 @@ build.stepfuns <- function(pCDFlist){
 #'
 #'This version: 2018-02-12.
 #'
-#'@templateVar msg FALSE
+#'@seealso
+#'\code{\link{discrete.BH}}, \code{\link{DBR}}
+#'
 #'@templateVar stepf FALSE
 #'@templateVar pv.numer FALSE
 #'@templateVar pv.denom FALSE
 #'@templateVar alpha FALSE
 #'@templateVar sorted.pv FALSE
-#'@templateVar bigMem FALSE
-#'@templateVar verbose FALSE
 #'@templateVar pCDFlist FALSE
 #'@templateVar raw.pvalues FALSE
 #'@templateVar direction FALSE

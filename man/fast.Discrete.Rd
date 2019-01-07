@@ -5,8 +5,7 @@
 \title{Fast application of discrete procedures}
 \usage{
 fast.Discrete(counts, alternative = "greater", input = "noassoc",
-  alpha = 0.05, direction = "su", adaptive = FALSE, bigMem = FALSE,
-  verbose = FALSE)
+  alpha = 0.05, direction = "su", adaptive = FALSE)
 }
 \arguments{
 \item{counts}{a data frame of 2 or 4 columns and any number of lines,
@@ -26,18 +25,14 @@ The three possible values are \code{"noassoc"}
 \item{direction}{a character string specifying whether to conduct a step-up (\code{direction="su"}, by default) or step-down procedure (\code{direction="sd"}).}
 
 \item{adaptive}{a boolean specifying whether to conduct an adaptive procedure or not.}
-
-\item{bigMem}{a boolean. If \code{TRUE}, the code uses matrixes and functions of the apply family as far as possible (faster for small number of hypotheses and support size, but slower otherwise due to memory management overhead). If \code{FALSE}, computations are done with \code{for} loops and chunks to conserve memory.}
-
-\item{verbose}{a boolean indicating if \code{msg} must be printed. Used when \code{bigMem=TRUE}, to print messages informing if in-memory computation was successful or if loops and chunks were used as fallback.}
 }
 \value{
 A list whose elements are:
-\item{Rejected}{rejected raw p-values}
-\item{Indices}{indices of rejected hypotheses}
-\item{Max.k}{number of rejections}
-\item{Alpha}{maximum significance level for which a rejection occured, that is \eqn{Alpha = alpha * Max.k / m}}
-\item{Adjusted}{adjusted p-values (only for step-down direction).}
+\item{Rejected}{Rejected raw p-values}
+\item{Indices}{Indices of rejected hypotheses}
+\item{k.hat}{Number of rejections}
+\item{Alpha}{Maximum significance level for the transformed p-values for which a rejection occured, that is \eqn{Alpha = alpha * k.hat / m}}
+\item{Adjusted}{Adjusted p-values (only for step-down direction).}
 }
 \description{
 Apply the [HSU], [HSD], [AHSU] or [AHSD] procedure,
@@ -45,7 +40,7 @@ without computing the critical constants,
 to a data set of 2 x 2 contingency tables using Fisher's exact tests.
 }
 \details{
-This version: 2018-08-21.
+This version: 2018-11-13.
 }
 \examples{
 
@@ -53,16 +48,16 @@ X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
 X2 <- c(0, 0, 1, 3, 2, 1, 2, 2, 2)
 N1 <- rep(148, 9)
 N2 <- rep(132, 9)
-Y1 <- N1-X1
-Y2 <- N2-X2
-df <- data.frame(X1,Y1,X2,Y2)
+Y1 <- N1 - X1
+Y2 <- N2 - X2
+df <- data.frame(X1, Y1, X2, Y2)
 df
 
-DBH.su <- fast.Discrete(counts=df, input="noassoc", direction="su")
-DBH.sd <- fast.Discrete(counts=df, input="noassoc", direction="sd")
+DBH.su <- fast.Discrete(counts = df, input = "noassoc", direction = "su")
+DBH.sd <- fast.Discrete(counts = df, input = "noassoc", direction = "sd")
 DBH.sd$Adjusted
-ADBH.su <- fast.Discrete(counts=df, input="noassoc", direction="su", adaptive=TRUE)
-ADBH.sd <- fast.Discrete(counts=df, input="noassoc", direction="sd", adaptive=TRUE)
+ADBH.su <- fast.Discrete(counts = df, input = "noassoc", direction = "su", adaptive = TRUE)
+ADBH.sd <- fast.Discrete(counts = df, input = "noassoc", direction = "sd", adaptive = TRUE)
 ADBH.sd$Adjusted
 
 }

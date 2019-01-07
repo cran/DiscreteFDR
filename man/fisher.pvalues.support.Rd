@@ -4,7 +4,8 @@
 \alias{fisher.pvalues.support}
 \title{Computing discrete p-values and their support for Fisher's exact tests}
 \usage{
-fisher.pvalues.support(counts, alternative = "greater", input = "noassoc")
+fisher.pvalues.support(counts, alternative = "greater",
+  input = "noassoc")
 }
 \arguments{
 \item{counts}{a data frame of 2 or 4 columns and any number of lines,

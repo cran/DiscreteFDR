@@ -32,3 +32,6 @@ short.eff(x,0.2)
 short.eff(x,0.35)
 
 }
+\seealso{
+\code{\link{discrete.BH}}, \code{\link{DBR}}
+}

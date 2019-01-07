@@ -45,5 +45,5 @@ match.pvals(toyList,toyRaw2)
 
 }
 \seealso{
-\code{\link{DBH}}, \code{\link{ADBH}}, \code{\link{DBR}}
+\code{\link{discrete.BH}}, \code{\link{DBR}}
 }

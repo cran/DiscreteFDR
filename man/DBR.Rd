@@ -4,33 +4,29 @@
 \alias{DBR}
 \title{[DBR-lambda] procedure}
 \usage{
-DBR(pCDFlist, raw.pvalues, alpha = 0.05, lambda = NULL,
-  ret.crit.consts = FALSE, bigMem = FALSE, verbose = FALSE)
+DBR(raw.pvalues, pCDFlist, alpha = 0.05, lambda = NULL,
+  ret.crit.consts = FALSE)
 }
 \arguments{
-\item{pCDFlist}{a list of the supports of the CDFs of the p-values. Each support is represented by a vector that must be in increasing order.}
-
 \item{raw.pvalues}{vector of the raw observed p-values, as provided by the end user and before matching with their nearest neighbour in the CDFs supports.}
+
+\item{pCDFlist}{a list of the supports of the CDFs of the p-values. Each support is represented by a vector that must be in increasing order.}
 
 \item{alpha}{the target FDR level, a number strictly between 0 and 1.}
 
 \item{lambda}{a number strictly between 0 and 1. If \code{lambda=NULL} (by default), then \code{lambda} is chosen equal to \code{alpha}.}
 
 \item{ret.crit.consts}{a boolean. If \code{TRUE}, critical constants are computed and returned (this is computationally intensive).}
-
-\item{bigMem}{a boolean. If \code{TRUE}, the code uses matrixes and functions of the apply family as far as possible (faster for small number of hypotheses and support size, but slower otherwise due to memory management overhead). If \code{FALSE}, computations are done with \code{for} loops and chunks to conserve memory.}
-
-\item{verbose}{a boolean indicating if \code{msg} must be printed. Used when \code{bigMem=TRUE}, to print messages informing if in-memory computation was successful or if loops and chunks were used as fallback.}
 }
 \value{
 A list whose elements are:
-\item{Rejected}{rejected raw p-values}
-\item{Indices}{indices of rejected hypotheses}
-\item{Max.k}{number of rejections}
-\item{Alpha}{maximum significance level for which a rejection occured, that is \eqn{Alpha = alpha * Max.k / m}}
-\item{Critical.constants}{critical constants (if requested)}
-\item{Adjusted}{adjusted p-values }
-\item{Lambda}{value of \code{lambda}.}
+\item{Rejected}{Rejected raw p-values}
+\item{Indices}{Indices of rejected hypotheses}
+\item{k.hat}{Number of rejections}
+\item{Alpha}{Maximum significance level for the transformed p-values for which a rejection occured, that is \eqn{Alpha = alpha * k.hat / m}}
+\item{Critical.constants}{Critical constants (if requested)}
+\item{Adjusted}{Adjusted p-values }
+\item{Lambda}{Value of \code{lambda}.}
 }
 \description{
 Apply the [DBR-lambda] procedure,
@@ -39,10 +35,10 @@ to a set of p-values and their discrete support.
 }
 \details{
 [DBR-lambda] is the discrete version of the [Blanchard-Roquain-lambda] procedure (see References),
-the authors of the latter suggest to take \code{lambda=alpha} (see their Proposition 17),
+the authors of the latter suggest to take \code{lambda = alpha} (see their Proposition 17),
 which explains the choice of the default value here. 
 
-This version: 2018-09-05.
+This version: 2018-11-13.
 }
 \section{References}{
 
@@ -63,7 +59,10 @@ df.formatted <- fisher.pvalues.support(counts = df, input = "noassoc")
 raw.pvalues <- df.formatted$raw
 pCDFlist <- df.formatted$support
 
-DBR.su.fast <- DBR(pCDFlist, raw.pvalues)
-DBR.su.crit <- DBR(pCDFlist, raw.pvalues, ret.crit.consts=TRUE)
+DBR.su.fast <- DBR(raw.pvalues, pCDFlist)
+DBR.su.crit <- DBR(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
 
+}
+\seealso{
+\code{\link{discrete.BH}}, \code{\link{DiscreteFDR}}
 }

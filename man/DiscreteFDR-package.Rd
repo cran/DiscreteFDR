@@ -12,10 +12,11 @@ discrete tests (see References).
 }
 \details{
 The functions are reorganised from the reference paper in the following way.
-\code{\link{DBH}} (for Discrete Benjamini-Hochberg) implements
-[HSU] and [HSD], \code{\link{ADBH}} (the "A" stands for Adaptive) implements [AHSU] and [AHSD], 
-and \code{\link{DBR}} (for Discrete Blanchard-Roquain) implements [HBR-lambda].
-Their main arguments are a vector
+\code{\link{discrete.BH}} (for Discrete Benjamini-Hochberg) implements
+[HSU], [HSD], [AHSU] and [AHSD] and \code{\link{DBR}} (for Discrete 
+Blanchard-Roquain) implements [HBR-lambda]. \code{\link{DBH}} and \code{\link{ADBH}}
+are wrappers for \code{\link{discrete.BH}} to access [HSU] and [HSD], as well as
+[AHSU] and [AHSD] directly. Their main arguments are a vector
 of raw observed p-values, and a list
 of the same length, which elements are the discrete supports
 of the CDFs of the p-values.
@@ -26,7 +27,7 @@ exact test of association. It has been inspired by an help
 page of the package \code{\link[discreteMTP]{discreteMTP}}.
 
 The function \code{\link{fast.Discrete}} is a wrapper for \code{\link{fisher.pvalues.support}}
-and  \code{\link{DBH}} (or  \code{\link{ADBH}}) which allows to apply discrete procedures
+and \code{\link{discrete.BH}} which allows to apply discrete procedures
 directly to a data set of contingency tables.
 
 We also provide the \code{\link{amnesia}} data set, used in 

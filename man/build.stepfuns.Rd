@@ -32,3 +32,6 @@ toyStep[[1]](0.65)
 toyStep[[2]](0.65)
 
 }
+\seealso{
+\code{\link{discrete.BH}}, \code{\link{DBR}}
+}

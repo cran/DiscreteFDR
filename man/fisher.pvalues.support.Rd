@@ -2,7 +2,7 @@
 % Please edit documentation in R/support.R
 \name{fisher.pvalues.support}
 \alias{fisher.pvalues.support}
-\title{Computing discrete p-values and their support for Fisher's exact tests}
+\title{Computing discrete p-values and their support for binomial and Fisher's exact tests}
 \usage{
 fisher.pvalues.support(counts, alternative = "greater",
   input = "noassoc")
@@ -12,7 +12,7 @@ fisher.pvalues.support(counts, alternative = "greater",
 each line representing a 2 x 2 contingency table to test.
 The number of columns and what they must contain depend on the value of the \code{input} argument, see Details.}
 
-\item{alternative}{same argument as in \code{\link{fisher.test}}. The three possible values are \code{"greater"} 
+\item{alternative}{same argument as in \code{\link{fisher.test}} and \code{\link{binom.test}}. The three possible values are \code{"greater"}
 (default), \code{"two.sided"} or \code{"less"} and you can specify just the initial letter.}
 
 \item{input}{the format of the input data frame, see Details. The three possible values are \code{"noassoc"} 
@@ -26,17 +26,17 @@ Each support is represented by a vector in increasing order.}
 }
 \description{
 Computes discrete raw p-values and their support
-for Fisher's exact test applied to 2 x 2 contingency tables
+for binomial test or Fisher's exact test applied to 2 x 2 contingency tables
 summarizing counts coming from two categorical measurements.
 }
 \details{
 Assume that each contingency tables compares 2 variables and resumes the counts of association
 or not with a condition. This can be resumed in the following table:
 \tabular{lccc}{
-\tab Association \tab No association \tab Total  \cr
-Variable 1 \tab X1 \tab Y1 \tab N1  \cr
-Variable 2 \tab X2  \tab Y2 \tab N2 \cr
-Total \tab X1+X2 \tab Y1+Y2  \tab N1+N2
+\tab Association \tab No association \tab Total \cr
+Variable 1 \tab X1 \tab Y1 \tab N1 \cr
+Variable 2 \tab X2 \tab Y2 \tab N2 \cr
+Total \tab X1 + X2 \tab Y1 + Y2 \tab N1 + N2
 }
 If \code{input="noassoc"}, \code{counts} has 4 columns which respectively contain X1, Y1, X2 and Y2.
 If \code{input="marginal"}, \code{counts} has 4 columns which respectively contain X1, N1, X2 and N2.
@@ -46,24 +46,29 @@ Heller & Gur (2011, see References). Each contingency table is obtained from one
 to all other variables of the study. That is, counts for "second variable" are replaced by the sum of the counts
 of the other variables:
 \tabular{lccc}{
-\tab Association \tab No association \tab Total  \cr
-Variable j \tab Xj \tab Yj \tab Nj  \cr
-Variables !=j \tab SUM(Xi)-Xj  \tab SUM(Yi)-Yj \tab SUM(Ni)-Nj \cr
+\tab Association \tab No association \tab Total \cr
+Variable j \tab Xj \tab Yj \tab Nj \cr
+Variables !=j \tab SUM(Xi) - Xj  \tab SUM(Yi) - Yj \tab SUM(Ni) - Nj \cr
 Total \tab SUM(Xi) \tab SUM(Yi)  \tab SUM(Ni)
 }
 Hence \code{counts} needs to have only 2 columns which respectively contain Xj and Yj.
 
+\code{binomial.pvalues.support} and \code{fisher.pvalues.support} are wrapper functions for \code{pvalues.support},
+setting \code{test.type = "binomial"} and \code{test.type = "fisher"}, respectively.
 
-The code for this function is inspired 
-from the example in the help page
-of \code{\link[discreteMTP]{p.discrete.adjust}}.
+The code for the computation of the p-values of Fisher's
+exact test is inspired by the example in the help page of
+\code{\link[discreteMTP]{p.discrete.adjust}}.
 
 See the Wikipedia article about Fisher's
 exact test, paragraph Example, for a good depiction
 of what the code does for each possible value
 of \code{alternative}.
 
-This version: 2018-08-21.
+The binomial test simply tests for p = 0.5 by using X1
+as the test statistic and N1 as the number of trials.
+
+This version: 2019-06-20.
 }
 \section{References}{
 
@@ -79,10 +84,11 @@ X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
 X2 <- c(0, 0, 1, 3, 2, 1, 2, 2, 2)
 N1 <- rep(148, 9)
 N2 <- rep(132, 9)
-Y1 <- N1-X1
-Y2 <- N2-X2
-df <- data.frame(X1,Y1,X2,Y2)
+Y1 <- N1 - X1
+Y2 <- N2 - X2
+df <- data.frame(X1, Y1, X2, Y2)
 df
+
 #Construction of the p-values and their support
 df.formatted <- fisher.pvalues.support(counts = df, input = "noassoc")
 raw.pvalues <- df.formatted$raw
@@ -92,6 +98,7 @@ data(amnesia)
 #We only keep the first 100 lines to keep the computations fast.
 #We also drop the first column to keep only columns of counts, in the Heller & Gur (2011) setting.
 amnesia <- amnesia[1:100,2:3]
+
 #Construction of the p-values and their support
 amnesia.formatted <- fisher.pvalues.support(counts = amnesia, input = "HG2011")
 raw.pvalues <- amnesia.formatted$raw

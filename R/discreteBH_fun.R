@@ -10,22 +10,20 @@
 #'\code{DBH} simply passes all its parameters to \code{discrete.BH} with \code{adaptive = FALSE}. 
 #'\code{ADBH} does the same with \code{adaptive = TRUE}.
 #'
-#'This version: 2018-11-13.
+#'This version: 2019-06-18.
 #'
 #'@seealso
 #'\code{\link{kernel}}, \code{\link{DiscreteFDR}}, \code{\link{DBR}}
 #'
-#'@templateVar stepf FALSE
-#'@templateVar pv.numer FALSE
-#'@templateVar pv.denom FALSE
+#'@templateVar pvalues FALSE
+#'@templateVar stepUp FALSE
 #'@templateVar alpha TRUE
-#'@templateVar sorted.pv FALSE
-#'@templateVar pCDFlist TRUE
+#'@templateVar sorted_pv FALSE
+#'@templateVar support FALSE
 #'@templateVar raw.pvalues TRUE
+#'@templateVar pCDFlist TRUE
 #'@templateVar direction TRUE
 #'@templateVar ret.crit.consts TRUE
-#'@templateVar sorted.num FALSE
-#'@templateVar t FALSE
 #'@templateVar lambda FALSE
 #'@templateVar adaptive TRUE
 #'@template param 
@@ -34,18 +32,28 @@
 #'@examples
 #'
 #'DBH.su.fast <- DBH(raw.pvalues, pCDFlist)
+#'summary(DBH.su.fast)
 #'DBH.sd.fast <- DBH(raw.pvalues, pCDFlist, direction = "sd")
 #'DBH.sd.fast$Adjusted
+#'summary(DBH.sd.fast)
+#'
 #'DBH.su.crit <- DBH(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
+#'summary(DBH.su.crit)
 #'DBH.sd.crit <- DBH(raw.pvalues, pCDFlist, direction = "sd", ret.crit.consts = TRUE)
 #'DBH.sd.crit$Adjusted
+#'summary(DBH.su.crit)
 #'
 #'ADBH.su.fast <- ADBH(raw.pvalues, pCDFlist)
+#'summary(ADBH.su.fast)
 #'ADBH.sd.fast <- ADBH(raw.pvalues, pCDFlist, direction = "sd")
 #'ADBH.sd.fast$Adjusted
+#'summary(ADBH.sd.fast)
+#'
 #'ADBH.su.crit <- ADBH(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
+#'summary(ADBH.su.crit)
 #'ADBH.sd.crit <- ADBH(raw.pvalues, pCDFlist, direction = "sd", ret.crit.consts = TRUE)
 #'ADBH.sd.crit$Adjusted
+#'summary(ADBH.sd.crit)
 #'
 #'@templateVar DBR FALSE
 #'@template return
@@ -67,10 +75,6 @@ discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", a
   o <- order(pvec)
   sorted.pvals <- pvec[o]
   #--------------------------------------------
-  #       define step functions corresponding to distribution functions of p-values under Null-Hypotheses
-  #--------------------------------------------
-  stepf <- build.stepfuns(pCDFlist)
-  #--------------------------------------------
   #       construct the vector of all values of all supports of the p-values
   #--------------------------------------------
   pv.list.all <- sort(unique(as.numeric(unlist(pCDFlist))))
@@ -78,55 +82,35 @@ discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", a
   #        Compute [HSU] or [HSD] significant p-values,
   #        their indices and the number of rejections
   #--------------------------------------------
+  direction <- match.arg(direction, c("su", "sd"))
   if(direction == "su"){
     # SU case
-    # apply the shortcut drawn from Lemma 2, that is
-    # c.m >= the effective critical value associated to alpha/(1 + alpha)
-    pv.list.c.m <- short.eff(pv.list.all, alpha/(1 + alpha))
-    # compute transformed support
-    y.c.m <- kernel.DBH.fast(stepf, pv.list.c.m, pv.list.c.m)
-    # search the values of the vector <= m*alpha
-    Ceiling <- which(y.c.m <= m * alpha)
-    # keep the greatest value (note that Ceiling is sorted in nondecreasing order)
-    c.m <- pv.list.c.m[Ceiling[length(Ceiling)]]
-    
     if(ret.crit.consts){
-      # restrict attention to these values, because c.k needs to be <= c.m
-      pv.list <- pv.list.all[pv.list.all <= c.m] 
       if(adaptive){
-        # apply the shortcut drawn from Lemma 4, that is
-        # c.1 >= the effective critical value associated to min((1-c.m)*alpha/m,c.m)
-        pv.list <- short.eff(pv.list, min((1 - c.m) * alpha / m, c.m))
         # compute transformed support
-        y <- kernel.ADBH.crit(stepf, pv.list, c.m, alpha, NULL) 
+        y <- kernel_ADBH_crit(pCDFlist, pv.list.all, sorted.pvals, TRUE, alpha)
       }
       else{
-        # apply the shortcut drawn from Lemma 2, that is
-        # c.1 >= the effective critical value associated to (alpha/m)/(1 + alpha)
-        pv.list <- short.eff(pv.list, alpha/(m + m * alpha))
         # compute transformed support
-        y <- kernel.DBH.crit(stepf, pv.list, c.m, alpha, NULL)
+        y <- kernel_DBH_crit(pCDFlist, pv.list.all, sorted.pvals, TRUE, alpha)
       }
       # find critical constants
       crit.constants <- y$crit.consts
       idx <- which(sorted.pvals <= crit.constants)
     }
     else{
-      # restrict attention to these values, because rejected p-values need to be <= c.m
-      obs.pvals <- sorted.pvals[sorted.pvals <= c.m]
-      if(length(obs.pvals)){
-        if(adaptive){
-          # compute transformed observed p-values
-          y <- kernel.ADBH.fast(stepf, obs.pvals, c.m)
-        }
-        else{
-          # compute transformed observed p-values
-          y <- kernel.DBH.fast(stepf, obs.pvals, c.m)
-        }
-        # determine significant (transformed) p-values
-        idx <- which(y <= 1:length(obs.pvals) * alpha)
+      if(adaptive){
+        # compute transformed observed p-values
+        y <- kernel_ADBH_fast(pCDFlist, sorted.pvals, TRUE, alpha, pv.list.all)
       }
       else{
+        # compute transformed observed p-values
+        y <- kernel_DBH_fast(pCDFlist, sorted.pvals, TRUE, alpha, pv.list.all)
+      }
+      # determine significant (transformed) p-values
+      if(length(y)){
+        idx <- which(y <= 1:length(y) * alpha)
+      }else{
         idx <- integer(0)
       }
     }
@@ -145,19 +129,13 @@ discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", a
   else{
     # SD case
     if(ret.crit.consts){
-      # apply the shortcut drawn from Lemma 3, that is
-      # c.1 >= the effective critical value associated to (alpha/m)/(1 + alpha/m)
-      pv.list <- short.eff(pv.list.all, alpha/(m + alpha))
-      # then re-add the observed p-values (needed to compute the adjusted p-values),
-      # because we may have removed some of them the shortcut
-      pv.list <- sort(unique(c(pv.list, sorted.pvals)))
       if(adaptive){
         # compute transformed support
-        y <- kernel.ADBH.crit(stepf, pv.list, pv.list, alpha, sorted.pvals)
+        y <- kernel_ADBH_crit(pCDFlist, pv.list.all, sorted.pvals, FALSE, alpha)
       }
       else{
         # compute transformed support
-        y <- kernel.DBH.crit(stepf, pv.list, pv.list, alpha, sorted.pvals)
+        y <- kernel_DBH_crit(pCDFlist, pv.list.all, sorted.pvals, FALSE, alpha)
       }
       # find critical constants
       crit.constants <- y$crit.consts
@@ -166,11 +144,11 @@ discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", a
     else{
       if(adaptive){
         # compute transformed sorted p-values
-        y <- kernel.ADBH.fast(stepf, sorted.pvals, sorted.pvals)
+        y <- kernel_ADBH_fast(pCDFlist, sorted.pvals, FALSE)
       }
       else{
         # compute transformed sorted p-values
-        y <- kernel.DBH.fast(stepf, sorted.pvals, sorted.pvals)
+        y <- kernel_DBH_fast(pCDFlist, sorted.pvals, FALSE)
       }
       # determine significant (transformed) p-values
       idx <- which(y > 1:m * alpha) 
@@ -194,24 +172,36 @@ discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", a
     }
   }
   #--------------------------------------------
-  #       Create output list
+  #       Create output S3 object
   #--------------------------------------------
-  output <- list(Rejected = pvec.rej, Indices = idx, Alpha = m.rej * alpha / m, k.hat = m.rej)
+  output <- list(Rejected = pvec.rej, Indices = idx, Num.rejected = m.rej)
   if(direction == "sd"){
     if(ret.crit.consts){
-      # compute adjusted p-values
-      pv.adj = cummax(pmin(y$pval.transf / 1:m, 1))
+      y <- y$pval.transf
     }
-    else{
-      # compute adjusted p-values
-      pv.adj = cummax(pmin(y / 1:m, 1))
-    }
+    # compute adjusted p-values
+    pv.adj = cummax(pmin(y / 1:m, 1))
     # add adjusted p-values to output list
     ro <- order(o)
-    output <- c(output, list(Adjusted = pv.adj[ro]))  
+    output$Adjusted = pv.adj[ro]
   }
-  # add critical constants to output list
-  if(ret.crit.consts) output$Critical.constants = crit.constants
+  # add critical values to output list
+  if(ret.crit.consts) output$Critical.values = crit.constants
+  
+  # include details of the used algorithm as strings
+  alg <- "Discrete Benjamini-Hochberg procedure"
+  alg <- if(adaptive) paste("Adaptive", alg) else alg
+  output$Method <- paste(alg, switch(direction, su = "(step-up)", sd = "(step-down)"))
+  output$Signif.level <- alpha
+  
+  # original test data (often included, e.g. when using 'binom.test()')
+  output$Data <- list()
+  output$Data$raw.pvalues <- raw.pvalues
+  output$Data$pCDFlist <- pCDFlist
+  # object names of the data as strings
+  output$Data$data.name <- paste(deparse(substitute(raw.pvalues)), "and", deparse(substitute(pCDFlist)))
+  
+  class(output) <- "DiscreteFDR"
   return(output)
 }
 

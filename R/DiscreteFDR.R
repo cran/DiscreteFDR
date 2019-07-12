@@ -1,7 +1,15 @@
+#'DiscreteFDR
+#'
 #'@description
 #' This package implements the [HSU], [HSD],
 #' [AHSU], [AHSD] and [HBR-lambda] procedures for
 #' discrete tests (see References). 
+#'
+#'@docType package
+#'@import Rcpp
+#'@importFrom Rcpp evalCpp
+#'@useDynLib DiscreteFDR
+#'@name DiscreteFDR
 #'
 #'@details
 #' The functions are reorganised from the reference paper in the following way.

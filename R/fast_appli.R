@@ -6,7 +6,7 @@
 #'to a data set of 2 x 2 contingency tables using Fisher's exact tests.
 #'
 #'@details
-#'This version: 2018-11-13.
+#'This version: 2019-06-18.
 #'
 #'@param counts a data frame of 2 or 4 columns and any number of lines,
 #'each line representing a 2 x 2 contingency table to test.
@@ -45,19 +45,30 @@
 #'df
 #'
 #'DBH.su <- fast.Discrete(counts = df, input = "noassoc", direction = "su")
+#'summary(DBH.su)
+#'
 #'DBH.sd <- fast.Discrete(counts = df, input = "noassoc", direction = "sd")
 #'DBH.sd$Adjusted
+#'summary(DBH.sd)
+#'
 #'ADBH.su <- fast.Discrete(counts = df, input = "noassoc", direction = "su", adaptive = TRUE)
+#'summary(ADBH.su)
+#'
 #'ADBH.sd <- fast.Discrete(counts = df, input = "noassoc", direction = "sd", adaptive = TRUE)
 #'ADBH.sd$Adjusted
+#'summary(ADBH.sd)
 #'
 #'@return 
-#'A list whose elements are:
+#'A \code{DiscreteFDR} S3 class object whose elements are:
 #'\item{Rejected}{Rejected raw p-values}
 #'\item{Indices}{Indices of rejected hypotheses}
-#'\item{k.hat}{Number of rejections}
-#'\item{Alpha}{Maximum significance level for the transformed p-values for which a rejection occured, that is \eqn{Alpha = alpha * k.hat / m}}
+#'\item{Num.rejected}{Number of rejections}
 #'\item{Adjusted}{Adjusted p-values (only for step-down direction).}
+#'\item{Method}{Character string describing the used algorithm, e.g. 'Discrete Benjamini-Hochberg procedure (step-up)'}
+#'\item{Signif.level}{Significance level \code{alpha}}
+#'\item{Data$raw.pvalues}{The values of \code{raw.pvalues}}
+#'\item{Data$pCDFlist}{The values of \code{pCDFlist}}
+#'\item{Data$data.name}{The variable name of the \code{counts} dataset}
 #'
 #'@name fast.Discrete
 #'@export
@@ -66,5 +77,8 @@ fast.Discrete <- function(counts, alternative = "greater", input = "noassoc", al
   raw.pvalues <- data.formatted$raw
   pCDFlist <- data.formatted$support
   
-  return(discrete.BH(raw.pvalues, pCDFlist, alpha, direction, adaptive, FALSE))
+  out <- discrete.BH(raw.pvalues, pCDFlist, alpha, direction, adaptive, FALSE)
+  out$Data$data.name <- deparse(substitute(counts)) 
+  
+  return(out)
 }

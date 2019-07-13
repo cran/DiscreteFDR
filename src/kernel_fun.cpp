@@ -18,7 +18,7 @@ using namespace Rcpp;
 //'with \code{stepUp = FALSE} (i.e. the step-down case), we still need to get
 //'transformed p-values to compute the adjusted p-values.
 //'
-//'This version: 2019-06-26.
+//'This version: 2019-07-13.
 //'
 //'@seealso
 //'\code{\link{discrete.BH}}, \code{\link{DiscreteFDR}},
@@ -90,7 +90,7 @@ NumericVector stepfun(const NumericVector &x, const NumericVector &sfun){
   
   // computing results
   for(int i = 0; i < len; i++){
-    while(sfun[pos] < x[i] && pos < size) pos++;
+    while(pos < size && sfun[pos] < x[i]) pos++;
     if(sfun[pos] == x[i]) out[i] = sfun[pos];
     else out[i] = sfun[pos - 1];
   }
@@ -235,7 +235,7 @@ List kernel_DBH_crit(const List &pCDFlist, const NumericVector &pvalues, const N
   // get indices of critical values
   int idx_pval = 0;
   for(int i = 1; i <= numTests; i++){
-    while(pval_transf[idx_pval] <= i * alpha && idx_pval < numValues) idx_pval++;
+    while(idx_pval < numValues && pval_transf[idx_pval] <= i * alpha) idx_pval++;
     crit[i - 1] = pv_list[idx_pval - 1];
   }
   
@@ -300,7 +300,7 @@ NumericVector kernel_ADBH_fast(const List &pCDFlist, const NumericVector &pvalue
   int numValues = pv_list.length();
   // possibly large data size requires to use chunks
   // size of the chunks (i.e. number of elements in a ~512 MiB matrix)
-  int size = std::max<int>(1, pow(2, 26) / numTests);
+  int size = std::max<int>(1, std::pow(2.0, 26.0) / numTests);
   // number of chunks
   int chunks = (numValues - 1) / size + 1;
   // vector to store transformed p-values
@@ -373,7 +373,7 @@ List kernel_ADBH_crit(const List &pCDFlist, const NumericVector &pvalues, const 
     pv_list = rev(sort_combine(sorted_pv, pv_list));
     // set minimum critical values indices to the one of the largest value <= tau_1
     int idx_pval = 1;
-    while(tau_1 > pv_list[idx_pval] && idx_pval < pv_list.length()) idx_pval++;
+    while(idx_pval < pv_list.length() && tau_1 > pv_list[idx_pval]) idx_pval++;
     crit.fill(idx_pval - 1);
   }
   else{
@@ -400,7 +400,7 @@ List kernel_ADBH_crit(const List &pCDFlist, const NumericVector &pvalues, const 
   int numValues = pv_list.length();
   // possibly large data size requires to use chunks
   // size of the chunks (i.e. number of elements in a ~512 MiB matrix)
-  int size = std::max<int>(1, pow(2, 26) / numTests);
+  int size = std::max<int>(1, std::pow(2.0, 26.0) / numTests);
   // number of chunks
   int chunks = (numValues - 1) / size + 1;
   
@@ -484,7 +484,7 @@ NumericVector kernel_DBR_fast(const List &pCDFlist, const NumericVector &pvalues
   
   // possibly large data size requires to use chunks
   // size of the chunks (i.e. number of elements in a ~512 MiB matrix)
-  int size = std::max<int>(1, pow(2, 26) / numTests);
+  int size = std::max<int>(1, std::pow(2.0, 26.0) / numTests);
   // number of chunks
   int chunks = (numValues - 1) / size + 1;
   
@@ -542,7 +542,7 @@ List kernel_DBR_crit(const List &pCDFlist, const NumericVector &pvalues, const N
   int numValues = pv_list.length();
   // possibly large data size requires to use chunks
   // size of the chunks (i.e. number of elements in a ~512 MiB matrix)
-  int size = std::max<int>(1, pow(2, 26) / numTests);
+  int size = std::max<int>(1, std::pow(2.0, 26.0) / numTests);
   // number of chunks
   int chunks = (numValues - 1) / size + 1;
   

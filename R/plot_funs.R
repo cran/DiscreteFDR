@@ -7,6 +7,8 @@
 #'@param x          an object of class "\code{DiscreteFDR}".
 #'@param breaks     as in \code{\link{hist}}; here, the Friedman-Diaconis
 #'                  algorithm(\code{"FD"}) is used as default.
+#'@param plot       a boolean If \code{TRUE} (the default), a histogram is
+#'                  plotted, otherwise a list of breaks and counts is returned.
 #'@param ...        further arguments to \code{\link{hist}} or
 #'                  \code{\link{plot.histogram}}, respectively.
 #'
@@ -25,19 +27,23 @@
 #'
 #'@importFrom graphics hist
 #'@export
-hist.DiscreteFDR <- function(x, breaks = "FD", ...){
+hist.DiscreteFDR <- function(x, breaks = "FD", plot = TRUE, ...){
   # necessary to appease automated R CMD check on CRAN
   main <- xlab <- NULL
   
-  # Main title
-  if(hasArg(main)) titl <- main else titl <- "Histogram of raw p-values"
-  
-  # X-axis label
-  if(hasArg(xlab)) labl <- xlab else labl <- "Raw p-values"
-  
   # call 'hist' function with raw p.values (default breaks: "FD"); "..." passes
   # all additional 'hist' arguments to this call
-  hist(x$Data$raw.pvalues, breaks = breaks, main = titl, xlab = labl,  ...)
+  if(plot && !hasArg(main) && !hasArg(xlab))
+    r <- hist(x$Data$raw.pvalues, breaks = breaks, main = "Histogram of raw p-values", xlab = "Raw p-values", plot = plot,  ...)
+  else if(plot && !hasArg(main))
+    r <- hist(x$Data$raw.pvalues, breaks = breaks, main = "Histogram of raw p-values", plot = plot,  ...)
+  else if(plot && !hasArg(xlab))
+    r <- hist(x$Data$raw.pvalues, breaks = breaks, xlab = "Raw p-values", plot = plot,  ...)
+  else r <- hist(x$Data$raw.pvalues, breaks = breaks, plot = plot,  ...)
+  
+  r$xname <- deparse(substitute(x))
+  
+  if(plot) return(invisible(r)) else return(r)
 }
 
 
@@ -104,29 +110,32 @@ plot.DiscreteFDR <- function(x, col = c(2, 4, 1), pch = c(1, 1, 1), lwd = c(1, 1
   pch <- rep_len(pch, 3)
   lwd <- rep_len(lwd, 3)
   
-  # Main title
-  if(hasArg(main)) titl <- main else titl <- x$Method
-  
-  # Y-axis label
-  if(hasArg(ylab)) labl <- ylab else labl <- "Sorted raw p-values"
+  # get values of ...-arguments
+  lst <- list(...)
   
   # start plotting with empty area
-  plot(x$Data$raw.pvalues, col = NA, main = titl, ylab = labl, ...)
-  # plot rejected p-values
-  points(sort(x$Data$raw.pvalues)[1:k], col = col[1], pch = pch[1], lwd = lwd[1], ...)
-  # plot accepted p-values
-  points((k + 1):m, sort(x$Data$raw.pvalues[-x$Indices]), col = col[2], pch = pch[2], lwd = lwd[2], ...)
+  if(!hasArg(main) && !hasArg(ylab))
+    plot(x$Data$raw.pvalues, col = NA, main = x$Method, ylab = "Sorted raw p-values", ...)
+  else if(!hasArg(main))
+    plot(x$Data$raw.pvalues, col = NA, main = x$Method, ...)
+  else if(!hasArg(ylab))
+    plot(x$Data$raw.pvalues, col = NA, ylab = "Sorted raw p-values", ...)
+  else plot(x$Data$raw.pvalues, col = NA, ...)
   
   # plot critical values (if present and plotting is requested by the user)
   if(!is.null(x$Critical.values) && type.crit != 'n'){
     lines(x$Critical.values, col = col[3], lwd = lwd[3], pch = pch[3], type = type.crit, ...)
   }
+  # plot rejected p-values
+  points(sort(x$Data$raw.pvalues)[1:k], col = col[1], pch = pch[1], lwd = lwd[1], ...)
+  # plot accepted p-values
+  points((k + 1):m, sort(x$Data$raw.pvalues[-x$Indices]), col = col[2], pch = pch[2], lwd = lwd[2], ...)
   
   # plot legend
   if(!is.null(legend)){
     n <- 3 - is.null(x$Critical.values)
     lt <- rep(0, n)
-    if(n > 2 && hasArg(lty) && !(type.crit %in% c('p', 'n'))) lt[3] <- list(...)$lty
+    if(n > 2 && hasArg(lty) && !(type.crit %in% c('p', 'n'))) lt[3] <- lst$lty
     if(length(legend) == 1){
       legend(legend, NULL, c("Rejected", "Accepted", "Critical values")[1:n], col = col[1:n], pch = pch[1:n], lty = lt[1:n], lwd = lwd[1:n])
     }else if(length(legend) == 2){

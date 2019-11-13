@@ -141,7 +141,8 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
              x <- l[i]:k[i]
              # the "-1" below is because lower.tail = FALSE computes P[X > x],
              # and we want P[X >= x]=P[X > x-1]
-             pCDFlist[[i]] <- pmin(1, phyper(x-1, A1.[i], A2.[i], n[i], lower.tail = FALSE))
+			       # pmin/pmax below is to account for machine rounding issues
+             pCDFlist[[i]] <- pmax(0, pmin(1, phyper(x-1, A1.[i], A2.[i], n[i], lower.tail = FALSE)))
              # the "+1" below is because vectors start with index 1 in R: x[A11[i]+1]=A11[i]
              raw.pvalues[i] <- pCDFlist[[i]][A11[i] + 1]
              # we want to have pCDFlist[[i]] in increasing order:
@@ -150,7 +151,8 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
          less =
            for (i in 1:number.items){
              x <- l[i]:k[i]
-             pCDFlist[[i]] <- pmin(1, phyper(x, A1.[i], A2.[i], n[i], lower.tail = TRUE))
+			       # pmin/pmax below is to account for machine rounding issues
+             pCDFlist[[i]] <- pmax(0, pmin(1, phyper(x, A1.[i], A2.[i], n[i], lower.tail = TRUE)))
              # the "+1" below is because vectors start with index 1 in R: x[A11[i]+1]=A11[i]
              raw.pvalues[i] <- pCDFlist[[i]][A11[i]+1]
            },
@@ -158,7 +160,8 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
            for (i in 1:number.items){
              x <- l[i]:k[i]
              atoms <- dhyper(x, A1.[i], A2.[i], n[i])
-             pCDFlist[[i]] <- pmin(1, sapply(x, function(nu){sum(atoms[which(atoms <= atoms[nu + 1])])}))
+			       # pmin/pmax below is to account for machine rounding issues
+             pCDFlist[[i]] <- pmax(0, pmin(1, sapply(x, function(nu){sum(atoms[which(atoms <= atoms[nu + 1])])})))
              # the "+1" above and below is because vectors start with index 1 in R: x[A11[i]+1]=A11[i]
              raw.pvalues[i] <- pCDFlist[[i]][A11[i] + 1]
              # we want to have pCDFlist[[i]] in increasing order:

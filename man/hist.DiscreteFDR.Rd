@@ -4,13 +4,16 @@
 \alias{hist.DiscreteFDR}
 \title{Histogram of Raw p-Values}
 \usage{
-\method{hist}{DiscreteFDR}(x, breaks = "FD", ...)
+\method{hist}{DiscreteFDR}(x, breaks = "FD", plot = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class "\code{DiscreteFDR}".}
 
 \item{breaks}{as in \code{\link{hist}}; here, the Friedman-Diaconis
 algorithm(\code{"FD"}) is used as default.}
+
+\item{plot}{a boolean If \code{TRUE} (the default), a histogram is
+plotted, otherwise a list of breaks and counts is returned.}
 
 \item{...}{further arguments to \code{\link{hist}} or
 \code{\link{plot.histogram}}, respectively.}

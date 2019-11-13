@@ -7,7 +7,6 @@
 #'
 #'@docType package
 #'@import Rcpp
-#'@importFrom Rcpp evalCpp
 #'@useDynLib DiscreteFDR
 #'@name DiscreteFDR
 #'

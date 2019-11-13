@@ -18,7 +18,7 @@
 #'with \code{stepUp = FALSE} (i.e. the step-down case), we still need to get
 #'transformed p-values to compute the adjusted p-values.
 #'
-#'This version: 2019-07-13.
+#'This version: 2019-11-13.
 #'
 #'@seealso
 #'\code{\link{discrete.BH}}, \code{\link{DiscreteFDR}},

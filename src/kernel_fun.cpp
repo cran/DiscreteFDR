@@ -18,7 +18,7 @@ using namespace Rcpp;
 //'with \code{stepUp = FALSE} (i.e. the step-down case), we still need to get
 //'transformed p-values to compute the adjusted p-values.
 //'
-//'This version: 2019-07-13.
+//'This version: 2019-11-13.
 //'
 //'@seealso
 //'\code{\link{discrete.BH}}, \code{\link{DiscreteFDR}},
@@ -92,7 +92,7 @@ NumericVector stepfun(const NumericVector &x, const NumericVector &sfun){
   for(int i = 0; i < len; i++){
     while(pos < size && sfun[pos] < x[i]) pos++;
     if(sfun[pos] == x[i]) out[i] = sfun[pos];
-    else out[i] = sfun[pos - 1];
+    else if(pos) out[i] = sfun[pos - 1]; else out[i] = 0;
   }
   
   return out;
@@ -164,6 +164,7 @@ NumericVector kernel_DBH_fast(const List &pCDFlist, const NumericVector &pvalues
     // p-values (when skipping the critical values computation, numValues = numTests)
     pval_transf = NumericVector(numValues);
     for(int i = 0; i < numTests; i++){
+      checkUserInterrupt();
       f_eval = stepfun(pvalues, as<NumericVector>(pCDFlist[i]));
       pval_transf += f_eval / (1 - f_eval);
     }
@@ -187,6 +188,7 @@ NumericVector kernel_DBH_fast(const List &pCDFlist, const NumericVector &pvalues
     // the output is the vector y= \sum_{i=1}^numTests F_i(pvalues)/(1 - F_i(tau.numTests))
     pval_transf = NumericVector(pv_list.length());
     for(int i = 0; i < numTests; i++){
+      checkUserInterrupt();
       NumericVector f = as<NumericVector>(pCDFlist[i]);
       pval_transf += stepfun(pv_list, f) / (1 - as<double>(stepfun(NumericVector(1, tau_m), f)));
     }
@@ -235,6 +237,7 @@ List kernel_DBH_crit(const List &pCDFlist, const NumericVector &pvalues, const N
   // get indices of critical values
   int idx_pval = 0;
   for(int i = 1; i <= numTests; i++){
+    checkUserInterrupt();
     while(idx_pval < numValues && pval_transf[idx_pval] <= i * alpha) idx_pval++;
     crit[i - 1] = pv_list[idx_pval - 1];
   }
@@ -246,6 +249,7 @@ List kernel_DBH_crit(const List &pCDFlist, const NumericVector &pvalues, const N
     // search for sorted p-values in 'pv_list' and get their transformations
     idx_pval = 0;
     for(int i = 0; i < numTests; i++){
+      checkUserInterrupt();
       while(pv_list[idx_pval] != sorted_pv[i]) idx_pval++;
       transf[i] = pval_transf[idx_pval];
     }
@@ -307,6 +311,7 @@ NumericVector kernel_ADBH_fast(const List &pCDFlist, const NumericVector &pvalue
   pval_transf = NumericVector(numValues);
   
   for(int i = 0; i < chunks; i++){
+    checkUserInterrupt();
     // the min( , numValues) is here for the last chunk
     NumericVector pv = pvalues[Range(i * size, std::min<int>((i + 1) * size, numValues) - 1)];
     // length of the vector
@@ -330,6 +335,7 @@ NumericVector kernel_ADBH_fast(const List &pCDFlist, const NumericVector &pvalue
     colsortdec(mat);
     // compute transformed p-values
     for(int j = 0; j < len; j++){
+      checkUserInterrupt();
       // index of current value in pv_list (!)
       int idx_pval = i * size + j;
       // evaluated F_j in descending order
@@ -410,6 +416,7 @@ List kernel_ADBH_crit(const List &pCDFlist, const NumericVector &pvalues, const 
   int idx_transf = numTests - 1;
   // compute critical values (and transformed raw p-values for step-down)
   for(int i = 0; i < chunks; i++){
+    checkUserInterrupt();
     // the min( , numValues) is here for the last chunk
     NumericVector pv = pv_list[Range(i * size, std::min<int>((i + 1) * size, numValues) - 1)];
     // length of the vector
@@ -435,6 +442,7 @@ List kernel_ADBH_crit(const List &pCDFlist, const NumericVector &pvalues, const 
     // compute transformed p-value support (as in pv_list)
     int j = 0;
     while(j < len && ((!stepUp && (idx_transf >= 0 || idx_crit >= 0)) || (stepUp && idx_crit >= 0))){
+      checkUserInterrupt();
       // evaluated F_j in descending order
       NumericVector temp = NumericVector(mat(_, j));
       // compute sum
@@ -489,6 +497,7 @@ NumericVector kernel_DBR_fast(const List &pCDFlist, const NumericVector &pvalues
   int chunks = (numValues - 1) / size + 1;
   
   for(int i = 0; i < chunks; i++){
+    checkUserInterrupt();
     // the min( , numValues) is here for the last chunk
     NumericVector pv = pvalues[Range(i * size, std::min<int>((i + 1) * size, numValues) - 1)];
     // length of the vector
@@ -505,6 +514,7 @@ NumericVector kernel_DBR_fast(const List &pCDFlist, const NumericVector &pvalues
     
     int j = 0;
     while(j < len && mat(0, j) <= lambda){
+      checkUserInterrupt();
       // index of current value in 'pv_list'
       int idx_pval = i * size + j;
       // evaluated F_j in descending order
@@ -554,6 +564,7 @@ List kernel_DBR_crit(const List &pCDFlist, const NumericVector &pvalues, const N
   int idx_transf = 0;
   
   for(int i = 0; i < chunks; i++){
+    checkUserInterrupt();
     // the min( , numValues) is here for the last chunk
     NumericVector pv = pv_list[Range(i * size, std::min<int>((i + 1) * size, numValues) - 1)];
     // length of the vector
@@ -571,6 +582,7 @@ List kernel_DBR_crit(const List &pCDFlist, const NumericVector &pvalues, const N
     // sum for transformations
     double s = 0;
     while(j < len && mat(0, j) <= lambda && idx_crit < numTests){
+      checkUserInterrupt();
       // index of current value in 'pv_list'
       idx_pval = i * size + j;
       // evaluated F_j in descending order

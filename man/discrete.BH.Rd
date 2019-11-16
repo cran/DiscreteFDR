@@ -79,7 +79,7 @@ DBH.su.crit <- DBH(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
 summary(DBH.su.crit)
 DBH.sd.crit <- DBH(raw.pvalues, pCDFlist, direction = "sd", ret.crit.consts = TRUE)
 DBH.sd.crit$Adjusted
-summary(DBH.su.crit)
+summary(DBH.sd.crit)
 
 ADBH.su.fast <- ADBH(raw.pvalues, pCDFlist)
 summary(ADBH.su.fast)

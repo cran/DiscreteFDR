@@ -43,21 +43,24 @@ summary.DiscreteFDR <- function(object, ...){
   
   # number of tests
   m <- length(object$Data$raw.pvalues)
-  # number of rejections
-  k <- length(object$Rejected)
   # determine order of raw p-values
   o <- order(object$Data$raw.pvalues)
+  # ordered indices
+  i <- (1:m)[o]
   # sort raw p-values
   y <- object$Data$raw.pvalues[o]
   # determine for each p-value if its corresponding null hypothesis is rejected
   r <- ((1:m) %in% object$Indices)[o]
   
   # create summary table
-  if(!is.null(object$Critical.values))
-    if(!is.null(object$Adjusted))
-      out$Table <- data.frame('Index' = (1:m)[o], 'P-value' = y, 'Critical Value' = object$Critical.values, 'Adjusted' = object$Adjusted[o], 'Rejected' = r)
-  else out$Table <- data.frame('Index' = (1:m)[o], 'P-value' = y, 'Critical Value' = object$Critical.values, 'Rejected' = r)
-  else if(!is.null(object$Adjusted)) out$Table <- data.frame('Index' = (1:m)[o], 'P-value' = y, 'Adjusted' = object$Adjusted[o], 'Rejected' = r) else out$Table <- data.frame('Index' = (1:m)[o], 'P-value' = y, 'Rejected' = r)
+  out <- c(out, list(Table = data.frame('Index' = i, 'P.value' = y)))
+  if(exists('Critical.values', where = object)){
+    out$Table <- data.frame(out$Table, 'Critical.value' = object$Critical.values)
+  }
+  if(exists('Adjusted', where = object)){
+    out$Table <- data.frame(out$Table, 'Adjusted' = object$Adjusted[o])
+  }
+  out$Table <- data.frame(out$Table, 'Rejected' = r)
   
   # return output object
   class(out) <- "summary.DiscreteFDR" # basically a 'DiscreteFDR' object, but with a summary table (just like 'lm' and 'summary.lm' classes)
@@ -70,7 +73,6 @@ summary.DiscreteFDR <- function(object, ...){
 print.summary.DiscreteFDR <- function(x, max = NULL, ...){#max.rows
   # determine number of tests and rejections
   m <- length(x$Data$raw.pvalues)
-  k <- length(x$Rejected)
   
   # print 'DiscreteFDR' part of the object
   print.DiscreteFDR(x)
@@ -79,7 +81,6 @@ print.summary.DiscreteFDR <- function(x, max = NULL, ...){#max.rows
   max <- if(!is.null(max)) ncol(x$Table) * max else getOption("max.print")
   
   # print additional summary table
-  #print(x$Table, max = max, ...)
   print(x$Table, max = max, ...)
   
   cat("\n")

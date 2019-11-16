@@ -1,4 +1,4 @@
-#'@name hist.DiscreteFDR
+  #'@name hist.DiscreteFDR
 #'@title Histogram of Raw p-Values
 #'
 #'@description
@@ -123,7 +123,7 @@ plot.DiscreteFDR <- function(x, col = c(2, 4, 1), pch = c(1, 1, 1), lwd = c(1, 1
   else plot(x$Data$raw.pvalues, col = NA, ...)
   
   # plot critical values (if present and plotting is requested by the user)
-  if(!is.null(x$Critical.values) && type.crit != 'n'){
+  if(exists('Critical.values', where = x) && type.crit != 'n'){
     lines(x$Critical.values, col = col[3], lwd = lwd[3], pch = pch[3], type = type.crit, ...)
   }
   # plot rejected p-values
@@ -133,7 +133,7 @@ plot.DiscreteFDR <- function(x, col = c(2, 4, 1), pch = c(1, 1, 1), lwd = c(1, 1
   
   # plot legend
   if(!is.null(legend)){
-    n <- 3 - is.null(x$Critical.values)
+    n <- 3 - exists('Critical.values', where = x)
     lt <- rep(0, n)
     if(n > 2 && hasArg(lty) && !(type.crit %in% c('p', 'n'))) lt[3] <- lst$lty
     if(length(legend) == 1){

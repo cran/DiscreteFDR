@@ -160,6 +160,12 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
            for (i in 1:number.items){
              x <- l[i]:k[i]
              atoms <- dhyper(x, A1.[i], A2.[i], n[i])
+             # ensure that probabilities sum up to 1 (needs to be done multiple times sometimes)
+             s <- sum(atoms)
+             while(s != 1){
+               atoms <- atoms/s
+               s <- sum(atoms)
+             }
 			       # pmin/pmax below is to account for machine rounding issues
              pCDFlist[[i]] <- pmax(0, pmin(1, sapply(x, function(nu){sum(atoms[which(atoms <= atoms[nu + 1])])})))
              # the "+1" above and below is because vectors start with index 1 in R: x[A11[i]+1]=A11[i]

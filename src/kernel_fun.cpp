@@ -18,7 +18,7 @@ using namespace Rcpp;
 //'with \code{stepUp = FALSE} (i.e. the step-down case), we still need to get
 //'transformed p-values to compute the adjusted p-values.
 //'
-//'This version: 2019-11-13.
+//'This version: 2019-11-15.
 //'
 //'@seealso
 //'\code{\link{discrete.BH}}, \code{\link{DiscreteFDR}},
@@ -90,7 +90,7 @@ NumericVector stepfun(const NumericVector &x, const NumericVector &sfun){
   
   // computing results
   for(int i = 0; i < len; i++){
-    while(pos < size && sfun[pos] < x[i]) pos++;
+    while(pos < size - 1 && sfun[pos] < x[i]) pos++;
     if(sfun[pos] == x[i]) out[i] = sfun[pos];
     else if(pos) out[i] = sfun[pos - 1]; else out[i] = 0;
   }
@@ -445,14 +445,19 @@ List kernel_ADBH_crit(const List &pCDFlist, const NumericVector &pvalues, const 
       checkUserInterrupt();
       // evaluated F_j in descending order
       NumericVector temp = NumericVector(mat(_, j));
+      // sum
+      double s;
       // compute sum
-      double s = sum(temp[Range(0, numTests - idx_crit - 1)]);
+      if(idx_crit >= 0){
+        s = sum(temp[Range(0, numTests - idx_crit - 1)]);
+      }
       // check satisfaction of condition
       if(idx_crit >= 0 && s <= alpha * (idx_crit + 1)){
         // current p-value satisfies condition
         // => save index of current p-value as critical value
-        crit[idx_crit--] = i * size + j;
+        crit[idx_crit] = i * size + j;
         // go to next critical value index to search for
+        idx_crit--;
       }else{
         // current p-value does not satisfy condition
         // go to next p-value in this chunk

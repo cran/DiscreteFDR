@@ -45,12 +45,19 @@
 #'@name DBR
 #'@export
 DBR <- function(raw.pvalues, pCDFlist, alpha = 0.05, lambda = NULL, ret.crit.consts = FALSE){
-  m <- length(raw.pvalues)
-  # if lambda is not provided (lambda = NULL),
-  # set lambda = alpha
+  # check arguments
+  if(is.null(alpha) || is.na(alpha) || !is.numeric(alpha) || alpha < 0 || alpha > 1)
+    stop("'alpha' must be a probability between 0 and 1!")
   if (is.null(lambda)){
+    # if lambda is not provided, set lambda = alpha
     lambda <- alpha
+  }else{
+    if(is.na(lambda) || !is.numeric(lambda) || lambda < 0 || lambda > 1)
+      stop("'lambda' must be a probability between 0 and 1!")
   }
+  
+  m <- length(raw.pvalues)
+  if(m != length(pCDFlist)) stop("The lengths of 'raw.pvalues' and 'pCDFlist' must be equal!")
   #--------------------------------------------
   #       prepare p-values for processing
   #--------------------------------------------

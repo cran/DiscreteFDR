@@ -9,15 +9,15 @@ match.pvals(pCDFlist, raw.pvalues)
 \arguments{
 \item{pCDFlist}{a list of the supports of the CDFs of the p-values. Each support is represented by a vector that must be in increasing order.}
 
-\item{raw.pvalues}{vector of the raw observed p-values, as provided by the end user and before matching with their nearest neighbour in the CDFs supports.}
+\item{raw.pvalues}{vector of the raw observed p-values, as provided by the end user and before matching with their nearest neighbor in the CDFs supports.}
 }
 \value{
 A vector where each raw p-value has been
-replaced by its nearest neighbour.
+replaced by its nearest neighbor.
 }
 \description{
 Constructs the observed p-values from the raw observed p-values, 
-by rounding them to their nearest neighbour matching
+by rounding them to their nearest neighbor matching
 with the supports of their respective
 CDFs (as in function \code{\link[discreteMTP]{p.discrete.adjust}} 
 of package \code{\link[discreteMTP]{discreteMTP}}).

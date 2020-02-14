@@ -24,7 +24,7 @@ In total, 682648 adverse drug reactions were reported, among them 2044 cases of 
 }
 \details{
 The data was collected from the Drug Analysis Prints published 
-by the Medicines and Healthecare products Regulatory Agency (MHRA),
+by the Medicines and Healthcare products Regulatory Agency (MHRA),
 by Heller & Gur. See references for more details.
 }
 \section{References}{

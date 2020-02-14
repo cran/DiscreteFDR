@@ -64,7 +64,14 @@ NULL
 #'@rdname discrete.BH
 #'@export
 discrete.BH <- function(raw.pvalues, pCDFlist, alpha = 0.05, direction = "su", adaptive = FALSE, ret.crit.consts = FALSE){
-  m <- as.integer(length(raw.pvalues))
+  # check arguments
+  if(is.null(alpha) || is.na(alpha) || !is.numeric(alpha) || alpha < 0 || alpha > 1)
+    stop("'alpha' must be a probability between 0 and 1!")
+  
+  m <- length(raw.pvalues)
+  if(m != length(pCDFlist)) stop("The lengths of 'raw.pvalues' and 'pCDFlist' must be equal!")
+  
+  direction <- match.arg(direction, c("su", "sd"))
   #--------------------------------------------
   #       prepare p-values for processing
   #--------------------------------------------

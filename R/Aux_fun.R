@@ -2,7 +2,7 @@
 #'
 #'@description
 #'Constructs the observed p-values from the raw observed p-values, 
-#'by rounding them to their nearest neighbour matching
+#'by rounding them to their nearest neighbor matching
 #'with the supports of their respective
 #'CDFs (as in function \code{\link[discreteMTP]{p.discrete.adjust}} 
 #'of package \code{\link[discreteMTP]{discreteMTP}}).
@@ -45,7 +45,7 @@
 #'
 #'@return
 #'A vector where each raw p-value has been
-#'replaced by its nearest neighbour.
+#'replaced by its nearest neighbor.
 #'
 #'@name match.pvals
 #'@export

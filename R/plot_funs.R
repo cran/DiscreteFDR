@@ -133,7 +133,7 @@ plot.DiscreteFDR <- function(x, col = c(2, 4, 1), pch = c(1, 1, 1), lwd = c(1, 1
   
   # plot legend
   if(!is.null(legend)){
-    n <- 3 - exists('Critical.values', where = x)
+    n <- 2 + exists('Critical.values', where = x)
     lt <- rep(0, n)
     if(n > 2 && hasArg(lty) && !(type.crit %in% c('p', 'n'))) lt[3] <- lst$lty
     if(length(legend) == 1){

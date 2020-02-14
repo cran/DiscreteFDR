@@ -4,8 +4,15 @@
 \alias{plot.DiscreteFDR}
 \title{Plot Method for \code{DiscreteFDR} objects}
 \usage{
-\method{plot}{DiscreteFDR}(x, col = c(2, 4, 1), pch = c(1, 1, 1),
-  lwd = c(1, 1, 1), type.crit = "b", legend = NULL, ...)
+\method{plot}{DiscreteFDR}(
+  x,
+  col = c(2, 4, 1),
+  pch = c(1, 1, 1),
+  lwd = c(1, 1, 1),
+  type.crit = "b",
+  legend = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class "\code{DiscreteFDR}".}

@@ -11,7 +11,7 @@ This package implements the [HSU], [HSD],
 discrete tests (see References).
 }
 \details{
-The functions are reorganised from the reference paper in the following way.
+The functions are reorganized from the reference paper in the following way.
 \code{\link{discrete.BH}} (for Discrete Benjamini-Hochberg) implements
 [HSU], [HSD], [AHSU] and [AHSD] and \code{\link{DBR}} (for Discrete 
 Blanchard-Roquain) implements [HBR-lambda]. \code{\link{DBH}} and \code{\link{ADBH}}
@@ -40,7 +40,9 @@ by the main ones.
 }
 \section{References}{
 
-S. Döhler, G. Durand and E. Roquain (2018). New FDR bounds for discrete and heterogeneous tests. Electronic Journal of Statistics, Volume 12, Number 1 (2018) \href{https://projecteuclid.org/euclid.ejs/1528855551}{link}.
+Döhler, S., Durand, G., & Roquain, E. (2018). New FDR bounds for discrete and heterogeneous tests.
+\emph{Electronic Journal of Statistics}, \emph{12}(1), 1867-1900.
+\href{https://doi.org/10.1214/18-EJS1441}{doi:10.1214/18-EJS1441}.
 }
 
 \author{

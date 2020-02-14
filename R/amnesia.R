@@ -7,7 +7,7 @@
 #' 
 #' @details 
 #' The data was collected from the Drug Analysis Prints published 
-#' by the Medicines and Healthecare products Regulatory Agency (MHRA),
+#' by the Medicines and Healthcare products Regulatory Agency (MHRA),
 #' by Heller & Gur. See references for more details.
 #' @usage data(amnesia)
 #'

@@ -4,11 +4,16 @@
 \alias{DBR}
 \title{[HBR-\eqn{\lambda}] procedure}
 \usage{
-DBR(raw.pvalues, pCDFlist, alpha = 0.05, lambda = NULL,
-  ret.crit.consts = FALSE)
+DBR(
+  raw.pvalues,
+  pCDFlist,
+  alpha = 0.05,
+  lambda = NULL,
+  ret.crit.consts = FALSE
+)
 }
 \arguments{
-\item{raw.pvalues}{vector of the raw observed p-values, as provided by the end user and before matching with their nearest neighbour in the CDFs supports.}
+\item{raw.pvalues}{vector of the raw observed p-values, as provided by the end user and before matching with their nearest neighbor in the CDFs supports.}
 
 \item{pCDFlist}{a list of the supports of the CDFs of the p-values. Each support is represented by a vector that must be in increasing order.}
 

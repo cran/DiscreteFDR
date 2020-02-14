@@ -10,22 +10,17 @@
 \alias{kernel_DBR_crit}
 \title{Kernel functions}
 \usage{
-kernel_DBH_fast(pCDFlist, pvalues, stepUp = FALSE, alpha = 0.05,
-  support = 0L)
+kernel_DBH_fast(pCDFlist, pvalues, stepUp = FALSE, alpha = 0.05, support = 0L)
 
-kernel_DBH_crit(pCDFlist, pvalues, sorted_pv, stepUp = FALSE,
-  alpha = 0.05)
+kernel_DBH_crit(pCDFlist, pvalues, sorted_pv, stepUp = FALSE, alpha = 0.05)
 
-kernel_ADBH_fast(pCDFlist, pvalues, stepUp = FALSE, alpha = 0.05,
-  support = 0L)
+kernel_ADBH_fast(pCDFlist, pvalues, stepUp = FALSE, alpha = 0.05, support = 0L)
 
-kernel_ADBH_crit(pCDFlist, pvalues, sorted_pv, stepUp = FALSE,
-  alpha = 0.05)
+kernel_ADBH_crit(pCDFlist, pvalues, sorted_pv, stepUp = FALSE, alpha = 0.05)
 
 kernel_DBR_fast(pCDFlist, pvalues, lambda = 0.05)
 
-kernel_DBR_crit(pCDFlist, pvalues, sorted_pv, lambda = 0.05,
-  alpha = 0.05)
+kernel_DBR_crit(pCDFlist, pvalues, sorted_pv, lambda = 0.05, alpha = 0.05)
 }
 \arguments{
 \item{pCDFlist}{a list of the supports of the CDFs of the p-values. Each support is represented by a vector that must be in increasing order.}

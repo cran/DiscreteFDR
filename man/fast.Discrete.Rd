@@ -4,8 +4,14 @@
 \alias{fast.Discrete}
 \title{Fast application of discrete procedures}
 \usage{
-fast.Discrete(counts, alternative = "greater", input = "noassoc",
-  alpha = 0.05, direction = "su", adaptive = FALSE)
+fast.Discrete(
+  counts,
+  alternative = "greater",
+  input = "noassoc",
+  alpha = 0.05,
+  direction = "su",
+  adaptive = FALSE
+)
 }
 \arguments{
 \item{counts}{a data frame of 2 or 4 columns and any number of lines,

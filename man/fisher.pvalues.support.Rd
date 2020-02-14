@@ -4,19 +4,24 @@
 \alias{fisher.pvalues.support}
 \title{Computing discrete p-values and their support for binomial and Fisher's exact tests}
 \usage{
-fisher.pvalues.support(counts, alternative = "greater",
-  input = "noassoc")
+fisher.pvalues.support(counts, alternative = "greater", input = "noassoc")
 }
 \arguments{
 \item{counts}{a data frame of 2 or 4 columns and any number of lines,
-each line representing a 2 x 2 contingency table to test.
-The number of columns and what they must contain depend on the value of the \code{input} argument, see Details.}
+each line representing a 2 x 2 contingency table to
+test. The number of columns and what they must contain
+depend on the value of the \code{input} argument, see
+Details.}
 
-\item{alternative}{same argument as in \code{\link{fisher.test}} and \code{\link{binom.test}}. The three possible values are \code{"greater"}
-(default), \code{"two.sided"} or \code{"less"} and you can specify just the initial letter.}
+\item{alternative}{same argument as in \code{\link{fisher.test}}. The three
+possible values are \code{"greater"} (default),
+\code{"two.sided"} or \code{"less"} and you can specify
+just the initial letter.}
 
-\item{input}{the format of the input data frame, see Details. The three possible values are \code{"noassoc"} 
-(default), \code{"marginal"} or \code{"HG2011"} and you can specify just the initial letter.}
+\item{input}{the format of the input data frame, see Details. The
+three possible values are \code{"noassoc"} (default),
+\code{"marginal"} or \code{"HG2011"} and you can specify
+just the initial letter.}
 }
 \value{
 A list of two elements:
@@ -68,7 +73,7 @@ of \code{alternative}.
 The binomial test simply tests for p = 0.5 by using X1
 as the test statistic and N1 as the number of trials.
 
-This version: 2019-06-20.
+This version: 2019-11-15.
 }
 \section{References}{
 

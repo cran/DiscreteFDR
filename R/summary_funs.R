@@ -70,8 +70,8 @@ summary.DiscreteFDR <- function(object, ...){
 #'@rdname summary.DiscreteFDR
 #'@export
 ## S3 method for class 'summary.DiscreteFDR'
-print.summary.DiscreteFDR <- function(x, max = NULL, ...){#max.rows
-  # determine number of tests and rejections
+print.summary.DiscreteFDR <- function(x, max = NULL, ...){
+  # determine number of tests
   m <- length(x$Data$raw.pvalues)
   
   # print 'DiscreteFDR' part of the object

@@ -44,7 +44,7 @@
 #'The binomial test simply tests for p = 0.5 by using X1
 #'as the test statistic and N1 as the number of trials.
 #'
-#'This version: 2019-11-15.
+#'This version: 2021-05-23.
 #'
 #'@seealso
 #'\code{\link[discreteMTP]{p.discrete.adjust}}, \code{\link{fisher.test}}
@@ -166,14 +166,16 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
            for (i in 1:number.items){
              x <- l[i]:k[i]
              atoms <- dhyper(x, A1.[i], A2.[i], n[i])
-             # ensure that probabilities sum up to 1 (needs to be done multiple times sometimes)
-             s <- sum(atoms)
-             while(s != 1){
-               atoms <- atoms/s
-               s <- sum(atoms)
+             # ensure that probabilities sum up to 1 (sometimes, needs to be done multiple times)
+             newsum <- sum(atoms)
+             while(newsum < 1){
+               oldsum <- newsum
+               atoms <- atoms/newsum
+               newsum <- sum(atoms)
+               if(oldsum == newsum) break;
              }
 			       # pmin/pmax below is to account for machine rounding issues
-             pCDFlist[[i]] <- pmax(0, pmin(1, sapply(x, function(nu){sum(atoms[which(atoms <= atoms[nu + 1])])})))
+             pCDFlist[[i]] <- pmax(0, pmin(1, sapply(x, function(nu){sum(atoms[which(atoms <= atoms[nu + 1 - l[i]])])})))
              # the "+1" above and below is because vectors start with index 1 in R: x[A11[i]+1]=A11[i]
              raw.pvalues[i] <- pCDFlist[[i]][A11[i] + 1]
              # we want to have pCDFlist[[i]] in increasing order:

@@ -73,7 +73,7 @@ of \code{alternative}.
 The binomial test simply tests for p = 0.5 by using X1
 as the test statistic and N1 as the number of trials.
 
-This version: 2019-11-15.
+This version: 2021-05-23.
 }
 \section{References}{
 

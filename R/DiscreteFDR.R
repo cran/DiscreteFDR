@@ -41,5 +41,5 @@
 #'@section References:
 #' Döhler, S., Durand, G., & Roquain, E. (2018). New FDR bounds for discrete and heterogeneous tests.
 #' \emph{Electronic Journal of Statistics}, \emph{12}(1), 1867-1900.
-#' \href{https://doi.org/10.1214/18-EJS1441}{doi:10.1214/18-EJS1441}.
+#' \doi{10.1214/18-EJS1441}
 "_PACKAGE"

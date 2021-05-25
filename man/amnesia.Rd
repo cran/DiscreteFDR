@@ -4,12 +4,14 @@
 \name{amnesia}
 \alias{amnesia}
 \title{Amnesia and other drug reactions in the MHRA pharmacovigilance spontaneous reporting system}
-\format{A data frame with 2446 rows representing drugs with the following 3 columns:
+\format{
+A data frame with 2446 rows representing drugs with the following 3 columns:
 \describe{
   \item{DrugName}{The name of the drug.}
   \item{AmnesiaCases}{Number of the amnesia cases reported for the drug.}
   \item{OtherAdverseCases}{Number of other adverse drug reactions reported for the drug.}
-}}
+}
+}
 \source{
 \href{https://yellowcard.mhra.gov.uk/idap}{Drug Analysis Prints on MHRA site}
 }

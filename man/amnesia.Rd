@@ -16,7 +16,7 @@ for the drug.}
 }
 }
 \source{
-\href{https://yellowcard.mhra.gov.uk/idap}{Drug Analysis Prints on MHRA site}
+\href{https://yellowcard.mhra.gov.uk/idaps}{Drug Analysis Prints on MHRA site}
 }
 \usage{
 data(amnesia)
@@ -30,8 +30,9 @@ and the number of cases with other adverse event for this drug (column 3).
 In total, 682,648 adverse drug reactions were reported, among them 2,044
 cases of amnesia.
 
-\strong{Note}: In future versions, this dataset will be removed. It will be part
-of a new R package that this package will be depending on.
+\strong{Note}: In future versions, this dataset will be removed. Please use the
+\code{\link[DiscreteDatasets:amnesia]{amnesia}} dataset from package
+\code{\link[DiscreteDatasets:DiscreteDatasets-package]{DiscreteDatasets}}.
 }
 \details{
 The data was collected from the Drug Analysis Prints published

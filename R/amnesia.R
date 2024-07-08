@@ -11,8 +11,9 @@
 #' In total, 682,648 adverse drug reactions were reported, among them 2,044
 #' cases of amnesia.
 #' 
-#' **Note**: In future versions, this dataset will be removed. It will be part
-#' of a new R package that this package will be depending on.
+#' **Note**: In future versions, this dataset will be removed. Please use the
+#' [`amnesia`][DiscreteDatasets::amnesia] dataset from package
+#' [`DiscreteDatasets`][DiscreteDatasets::DiscreteDatasets-package].
 #' 
 #' @usage data(amnesia)
 #'
@@ -30,7 +31,7 @@
 #'                            for the drug.}
 #' }
 #' @source
-#' [Drug Analysis Prints on MHRA site](https://yellowcard.mhra.gov.uk/idap)
+#' [Drug Analysis Prints on MHRA site](https://yellowcard.mhra.gov.uk/idaps)
 #' 
 #' @section References:
 #' R. Heller and H. Gur (2011). False discovery rate controlling procedures

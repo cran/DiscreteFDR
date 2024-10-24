@@ -38,6 +38,35 @@ inline void eval_pv_rev(double &eval, double val, const NumericVector &vec, int 
   //} else eval = 1;
 }
 
+// computes the index of the largest element of a vector which is <= a given value
+inline int binary_search(const NumericVector &vec, const double value, const int len) {
+  int idx_left = 0, idx_right = len - 1, idx_mid = len - 1;
+  bool stop = false;
+  
+  while(!stop) {
+    if(vec[idx_mid] > value) {
+      if(idx_mid == 0) {
+        stop = true;
+      } else if(idx_mid - idx_left == 1) {
+        stop = true;
+        idx_mid = idx_left;
+      } else {
+        idx_right = idx_mid;
+        idx_mid = idx_left + (idx_right - idx_left) / 2;
+      }
+    } else if(vec[idx_mid] <= value) {
+      if(vec[idx_mid] == value || idx_mid == len - 1 || idx_right - idx_mid == 1) {
+        stop = true;
+      } else {
+        idx_left = idx_mid;
+        idx_mid = idx_left + (idx_right - idx_left + 1) / 2;
+      }
+    }
+  }
+  
+  return idx_mid;
+}
+
 // function that binds two vectors, sorts it and eliminates duplications 
 NumericVector sort_combine(const NumericVector &x, const NumericVector &y);
 

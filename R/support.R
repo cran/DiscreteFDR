@@ -94,7 +94,7 @@
 #' @import DiscreteTests
 #' @export
 fisher.pvalues.support <- function(counts, alternative = "greater", input = "noassoc"){
-  deprecate_soft("1.3.7", "fisher.pvalues.support()", "generate.pvalues()")
+  deprecate_soft("2.0.0", "fisher.pvalues.support()", "generate.pvalues()")
   
   # 'counts' must be a non-empty data frame or a non-empty matrix 
   qassert(x = counts, rules = c("M+", "D+"))
@@ -123,7 +123,7 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
   counts <- switch(
     EXPR = input,
     HG2011 = reconstruct_two(counts),
-    marginal = reconstruct_four(counts),
+    marginal = reconstruct_four(counts, c(2, 4)),
     counts
   )
   
@@ -144,11 +144,10 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
 #' 
 #' @description
 #' Simple wrapper for generating p-values of discrete tests and their supports
-#' after pre-processing the input data. The user only has to provide 1.) a
+#' after preprocessing the input data. The user only has to provide 1.) a
 #' function that generates p-values and supports and 2.) an optional function
-#' that pre-processes (i.e. transforms) the input data (if necessary) before it
+#' that preprocesses (i.e. transforms) the input data (if necessary) before it
 #' can be used for p-value calculations. The respective arguments are provided
-#' by named lists.
 #' 
 #' @templateVar dat TRUE
 #' @templateVar test.fun TRUE
@@ -162,21 +161,21 @@ fisher.pvalues.support <- function(counts, alternative = "greater", input = "noa
 #' 
 #' @template exampleGPV
 #' @examples
-#' # Compute p-values and their supports of Fisher's exact test with pre-processing
+#' # Compute p-values and their supports of Fisher's exact test with preprocessing
 #' df2 <- data.frame(X1, N1, X2, N2)
 #' generate.pvalues(
 #'   dat = df2,
-#'   test.fun = "fisher.test.pv",
+#'   test.fun = "fisher_test_pv",
 #'   preprocess.fun = function(tab) {
 #'     for(col in c(2, 4)) tab[, col] <- tab[, col] - tab[, col - 1]
 #'     return(tab)
 #'   }
 #' )
 #' 
-#' # Compute p-values and their supports of a binomial test with pre-processing
+#' # Compute p-values and their supports of a binomial test with preprocessing
 #' generate.pvalues(
 #'   dat = rbind(c(5, 2, 7), c(3, 4, 0)), 
-#'   test.fun = "binom.test.pv",
+#'   test.fun = "binom_test_pv",
 #'   test.args = list(n = c(9, 8, 11), p = 0.6, alternative = "two.sided"),
 #'   preprocess.fun = colSums
 #' )
@@ -200,7 +199,7 @@ generate.pvalues <- function(
   ## get all functions from package 'DiscreteTests'
   funs <- ls(asNamespace("DiscreteTests"))
   ## extract available test functions
-  funs <- funs[endsWith(funs, ".test.pv")]
+  funs <- funs[endsWith(funs, "_test_pv")]
   ## make sure input 'test.fun' matches an available test function
   if(is.character(test.fun)) {
     ### match input 'test.fun' string to available test functions
@@ -217,14 +216,14 @@ generate.pvalues <- function(
         break;
       }
     }
-    if(!OK) stop(paste("'test.fun' must be one of the '*.test.pv' functions of",
+    if(!OK) stop(paste("'test.fun' must be one of the '*_test_pv' functions of",
                        "package 'DiscreteTests'."))
   }
   
   # make sure parameters for 'test.fun' are in a named list or NULL
   assert_list(test.args, names = "unique", null.ok = TRUE)
   
-  # make sure date pre-processing function is a function, string or NULL
+  # make sure date preprocessing function is a function, string or NULL
   assert(
     check_function(preprocess.fun, null.ok = TRUE),
     check_string(preprocess.fun)
@@ -237,11 +236,11 @@ generate.pvalues <- function(
   assert_list(preprocess.args, names = "unique", null.ok = TRUE)
   
   if(!is.null(preprocess.fun)){
-    # prepend data to pre-processing function's arguments list
+    # prepend data to preprocessing function's arguments list
     preprocess.args <- c(list(dat), preprocess.args)
     # set data parameter name according to first parameter of 'preprocess.fun'
     names(preprocess.args)[1] <- names(as.list(args(preprocess.fun)))[1]
-    # perform pre-processing
+    # perform preprocessing
     dat <- do.call(preprocess.fun, preprocess.args)
   }
   
@@ -250,7 +249,7 @@ generate.pvalues <- function(
   # assign data to new variable with original name
   assign(data.name, dat)
   
-  # prepend pre-processed data to test function's arguments list
+  # prepend preprocessed data to test function's arguments list
   test.args <- c(list(as.name(data.name)), test.args)
   # set data parameter name according to first parameter of 'test.fun'
   names(test.args)[1] <- names(as.list(args(test.fun)))[1]

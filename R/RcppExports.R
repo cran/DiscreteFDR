@@ -22,31 +22,50 @@
 #' parameters (including their names, order, etc.) may be changed without
 #' notice!
 #' 
+#' @templateVar pCDFlist TRUE
+#' @template param
+#' 
+#' @param pvalues      numeric vector, sorted in increasing order, that either
+#'                     must contain the entirety of all observable values of
+#'                     the p-value supports (when computing critical constants)
+#'                     or only the sorted raw p-values.
+#' @param stepUp       boolean specifying whether to conduct the step-up
+#'                     (`TRUE`) or step-down (`FALSE`; the default)
+#'                     procedure.
+#' @param tau_max      single real number strictly between 0 and 1 indicating
+#'                     the largest critical value for step-up procedures; if
+#'                     `NULL` (the default), it is computed automatically,
+#'                     otherwise it needs to be computed manually by the user;
+#'                     ignored if `stepUp = FALSE`.
+#' @param alpha        single real number strictly between 0 and 1 indicating
+#'                     the target FDR level; for `*_fast` kernels, it is only
+#'                     needed, if `stepUp = TRUE`.
+#' @param support      numeric vector, sorted in increasing order, that
+#'                     contains the entirety of all observable values of the
+#'                     p-value supports; for `*_fast` kernels, it is ignored if
+#'                     `stepUp = FALSE`.
+#' @param pCDFcounts   integer vector of counts that indicates to how many
+#'                     p-values each **unique** p-value distributions belongs.
+#' @param sorted_pv    numeric vector containing the raw p-values, sorted in
+#'                     increasing order.
+#' @param lambda       real number strictly between 0 and 1 specifying the DBR
+#'                     tuning parameter.
+#' 
 #' @details
 #' When computing critical constants under step-down, that is, when using
 #' `kernel_DBH_crit`, `kernel_ADBH_crit` or `kernel_DBR_crit` with
 #' `stepUp = FALSE` (i.e. the step-down case), we still need to get transformed
 #' p-values to compute the adjusted p-values.
 #' 
-#' @seealso
-#' [`discrete.BH`], [`fast.Discrete`], [`DBR`]
-#' 
-#' @templateVar pCDFlist TRUE
-#' @templateVar pvalues TRUE
-#' @templateVar stepUp TRUE
-#' @templateVar alpha2 TRUE
-#' @templateVar support TRUE
-#' @templateVar sorted_pv TRUE
-#' @templateVar lambda2 TRUE
-#' @templateVar pCDFcounts TRUE
-#' @template param 
-#' 
 #' @return
-#' For `kernel.DBH.fast`, `kernel.ADBH.fast` and `kernel.DBR.fast`, a vector
-#' of transformed p-values is returned. `kernel.DBH.crit`, `kernel.ADBH.crit`
-#' `kernel.DBR.crit` return a list with critical constants (`$crit.consts`)
-#' and transformed p-values (`$pval.transf`), but if `stepUp = FALSE`, there
-#' are critical values only.
+#' For `kernel_DBH_fast()`, `kernel_ADBH_fast()` and `kernel_DBR_fast()`, a
+#' vector of transformed p-values is returned. `kernel_DBH_crit`,
+#' `kernel_ADBH_crit` and `kernel_DBR_crit` return a list with critical
+#' constants (`$crit.consts`) and transformed p-values (`$pval.transf`), but if
+#' `stepUp = FALSE`, there are critical values only.
+#' 
+#' @seealso
+#' [`discrete.BH()`], [`direct.discrete.BH()`], [`DBR()`]
 #' 
 #' @examples \dontrun{
 #' X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
@@ -69,9 +88,9 @@
 #' 
 #' # If not searching for critical constants, we use only the observed p-values
 #' sorted.pvals   <- sort(raw.pvalues)
-#' y.DBH.sd.fast  <- kernel_DBH_fast(pCDFlist, sorted.pvals)
-#' y.ADBH.sd.fast <- kernel_ADBH_fast(pCDFlist, sorted.pvals)
-#' y.DBR.fast     <- kernel_DBR_fast(pCDFlist, sorted.pvals)
+#' y.DBH.sd.fast  <- DiscreteFDR:::kernel_DBH_fast(pCDFlist, sorted.pvals)
+#' y.ADBH.sd.fast <- DiscreteFDR:::kernel_ADBH_fast(pCDFlist, sorted.pvals)
+#' y.DBR.fast     <- DiscreteFDR:::kernel_DBR_fast(pCDFlist, sorted.pvals)
 #' # transformed values
 #' y.DBH.sd.fast
 #' y.ADBH.sd.fast
@@ -79,9 +98,9 @@
 #' 
 #' # compute transformed support
 #' pv.list        <- sort(unique(unlist(pCDFlist)))
-#' y.DBH.sd.crit  <- kernel_DBH_crit(pCDFlist, pv.list, sorted.pvals)
-#' y.ADBH.sd.crit <- kernel_ADBH_crit(pCDFlist, pv.list, sorted.pvals)
-#' y.DBR.crit     <- kernel_DBR_crit(pCDFlist, pv.list, sorted.pvals)
+#' y.DBH.sd.crit  <- DiscreteFDR:::kernel_DBH_crit(pCDFlist, pv.list, sorted.pvals)
+#' y.ADBH.sd.crit <- DiscreteFDR:::kernel_ADBH_crit(pCDFlist, pv.list, sorted.pvals)
+#' y.DBR.crit     <- DiscreteFDR:::kernel_DBR_crit(pCDFlist, pv.list, sorted.pvals)
 #' # critical constants
 #' y.DBH.sd.crit$crit.consts
 #' y.ADBH.sd.crit$crit.consts
@@ -91,12 +110,12 @@
 #' y.ADBH.sd.crit$pval.transf
 #' y.DBR.crit$pval.transf
 #' }
-#' 
+#'
 NULL
 
 #' @rdname kernel
-kernel_DBH_fast <- function(pCDFlist, pvalues, stepUp = FALSE, alpha = 0.05, support = numeric(), pCDFcounts = NULL) {
-    .Call('_DiscreteFDR_kernel_DBH_fast', PACKAGE = 'DiscreteFDR', pCDFlist, pvalues, stepUp, alpha, support, pCDFcounts)
+kernel_DBH_fast <- function(pCDFlist, pvalues, stepUp = FALSE, tau_max = NULL, alpha = 0.05, support = numeric(), pCDFcounts = NULL) {
+    .Call('_DiscreteFDR_kernel_DBH_fast', PACKAGE = 'DiscreteFDR', pCDFlist, pvalues, stepUp, tau_max, alpha, support, pCDFcounts)
 }
 
 #' @rdname kernel

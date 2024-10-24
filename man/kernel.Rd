@@ -14,6 +14,7 @@ kernel_DBH_fast(
   pCDFlist,
   pvalues,
   stepUp = FALSE,
+  tau_max = NULL,
   alpha = 0.05,
   support = numeric(),
   pCDFcounts = NULL
@@ -60,26 +61,45 @@ kernel_DBR_crit(
 \arguments{
 \item{pCDFlist}{list of the supports of the CDFs of the p-values; each list item must be a numeric vector, which is sorted in increasing order and whose last element equals 1.}
 
-\item{pvalues}{numeric vector, sorted in increasing order, that either must contain the entirety of all observable values of the p-value supports (when computing critical constants) or only the sorted raw p-values.}
+\item{pvalues}{numeric vector, sorted in increasing order, that either
+must contain the entirety of all observable values of
+the p-value supports (when computing critical constants)
+or only the sorted raw p-values.}
 
-\item{stepUp}{boolean specifying whether to conduct the step-up (\code{TRUE}) or step-down (\code{FALSE}; the default) procedure.}
+\item{stepUp}{boolean specifying whether to conduct the step-up
+(\code{TRUE}) or step-down (\code{FALSE}; the default)
+procedure.}
 
-\item{alpha}{single real number strictly between 0 and 1 indicating the target FDR level; for \verb{*.fast} kernels, it is only needed, if \code{stepUp = TRUE}.}
+\item{tau_max}{single real number strictly between 0 and 1 indicating
+the largest critical value for step-up procedures; if
+\code{NULL} (the default), it is computed automatically,
+otherwise it needs to be computed manually by the user;
+ignored if \code{stepUp = FALSE}.}
 
-\item{support}{numeric vector, sorted in increasing order, that contains the entirety of all observable values of the p-value supports; for \verb{*.fast} kernels, it is ignored if \code{stepUp = FALSE}.}
+\item{alpha}{single real number strictly between 0 and 1 indicating
+the target FDR level; for \verb{*_fast} kernels, it is only
+needed, if \code{stepUp = TRUE}.}
 
-\item{pCDFcounts}{integer vector of counts that indicates to how many p-values each \strong{unique} p-value distributions belongs.}
+\item{support}{numeric vector, sorted in increasing order, that
+contains the entirety of all observable values of the
+p-value supports; for \verb{*_fast} kernels, it is ignored if
+\code{stepUp = FALSE}.}
 
-\item{sorted_pv}{numeric vector containing the raw p-values, sorted in increasing order.}
+\item{pCDFcounts}{integer vector of counts that indicates to how many
+p-values each \strong{unique} p-value distributions belongs.}
 
-\item{lambda}{real number strictly between 0 and 1 specifying the DBR tuning parameter.}
+\item{sorted_pv}{numeric vector containing the raw p-values, sorted in
+increasing order.}
+
+\item{lambda}{real number strictly between 0 and 1 specifying the DBR
+tuning parameter.}
 }
 \value{
-For \code{kernel.DBH.fast}, \code{kernel.ADBH.fast} and \code{kernel.DBR.fast}, a vector
-of transformed p-values is returned. \code{kernel.DBH.crit}, \code{kernel.ADBH.crit}
-\code{kernel.DBR.crit} return a list with critical constants (\verb{$crit.consts})
-and transformed p-values (\verb{$pval.transf}), but if \code{stepUp = FALSE}, there
-are critical values only.
+For \code{kernel_DBH_fast()}, \code{kernel_ADBH_fast()} and \code{kernel_DBR_fast()}, a
+vector of transformed p-values is returned. \code{kernel_DBH_crit},
+\code{kernel_ADBH_crit} and \code{kernel_DBR_crit} return a list with critical
+constants (\verb{$crit.consts}) and transformed p-values (\verb{$pval.transf}), but if
+\code{stepUp = FALSE}, there are critical values only.
 }
 \description{
 Kernel functions that transform observed p-values or their support according
@@ -123,9 +143,9 @@ alpha <- 0.05
 
 # If not searching for critical constants, we use only the observed p-values
 sorted.pvals   <- sort(raw.pvalues)
-y.DBH.sd.fast  <- kernel_DBH_fast(pCDFlist, sorted.pvals)
-y.ADBH.sd.fast <- kernel_ADBH_fast(pCDFlist, sorted.pvals)
-y.DBR.fast     <- kernel_DBR_fast(pCDFlist, sorted.pvals)
+y.DBH.sd.fast  <- DiscreteFDR:::kernel_DBH_fast(pCDFlist, sorted.pvals)
+y.ADBH.sd.fast <- DiscreteFDR:::kernel_ADBH_fast(pCDFlist, sorted.pvals)
+y.DBR.fast     <- DiscreteFDR:::kernel_DBR_fast(pCDFlist, sorted.pvals)
 # transformed values
 y.DBH.sd.fast
 y.ADBH.sd.fast
@@ -133,9 +153,9 @@ y.DBR.fast
 
 # compute transformed support
 pv.list        <- sort(unique(unlist(pCDFlist)))
-y.DBH.sd.crit  <- kernel_DBH_crit(pCDFlist, pv.list, sorted.pvals)
-y.ADBH.sd.crit <- kernel_ADBH_crit(pCDFlist, pv.list, sorted.pvals)
-y.DBR.crit     <- kernel_DBR_crit(pCDFlist, pv.list, sorted.pvals)
+y.DBH.sd.crit  <- DiscreteFDR:::kernel_DBH_crit(pCDFlist, pv.list, sorted.pvals)
+y.ADBH.sd.crit <- DiscreteFDR:::kernel_ADBH_crit(pCDFlist, pv.list, sorted.pvals)
+y.DBR.crit     <- DiscreteFDR:::kernel_DBR_crit(pCDFlist, pv.list, sorted.pvals)
 # critical constants
 y.DBH.sd.crit$crit.consts
 y.ADBH.sd.crit$crit.consts
@@ -148,5 +168,5 @@ y.DBR.crit$pval.transf
 
 }
 \seealso{
-\code{\link{discrete.BH}}, \code{\link{fast.Discrete}}, \code{\link{DBR}}
+\code{\link[=discrete.BH]{discrete.BH()}}, \code{\link[=direct.discrete.BH]{direct.discrete.BH()}}, \code{\link[=DBR]{DBR()}}
 }

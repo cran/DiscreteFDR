@@ -7,49 +7,79 @@
 #' Computes a histogram of the raw p-values of a `DiscreteFDR` object.
 #' 
 #' @param x          an object of class `DiscreteFDR`.
-#' @param breaks     as in [`hist`]; here, the Friedman-Diaconis algorithm
-#'                   (`"FD"`) is used as default.
-#' @param plot       a boolean; if `TRUE` (the default), a histogram is plotted,
-#'                   otherwise a list of breaks and counts is returned.
-#' @param ...        further arguments to [`hist`] or [`plot.histogram`],
-#'                   respectively.
+#' @param breaks     as in [`graphics::hist()`]; here, the Friedman-Diaconis
+#'                   algorithm (`"FD"`) is used as default.
+#' @param mode       single character string specifying for which $p$-values the
+#'                   histogram is to be generated; must either be `"raw"` or
+#'                   `"selected"`.
+#' @param ...        further arguments to [`graphics::hist()`] or
+#'                   [`graphics::plot.histogram()`], respectively.
 #' 
 #' @details
-#' This method simply calls [`hist`] and passes the raw p-values of the object.
+#' If `x` does not contain results of a selection approach, a warning is issued
+#' and a histogram of the raw p-values is drawn. 
 #' 
 #' @return
 #' An object of class `histogram`.
 #'
 #' @template exampleGPV
-#' @examples 
+#' @examples
+#' # DBH (SU)
 #' DBH <- DBH(raw.pvalues, pCDFlist)
 #' hist(DBH)
 #'
 #' @importFrom graphics hist
 #' @export
-hist.DiscreteFDR <- function(x, breaks = "FD", plot = TRUE, ...){
+hist.DiscreteFDR <- function(
+    x,
+    mode = c("raw", "selected"),
+    breaks = "FD",
+    ...
+) {
   if(!("DiscreteFDR" %in% class(x)))
     stop("'x' must be an object of class DiscreteFDR")
   
-  # necessary to appease automated R CMD check on CRAN
-  main <- xlab <- NULL
+  mode <- match.arg(tolower(mode), c("raw", "selected"))
+  
+  # determine if selection was performed
+  select <- exists('Select', x)
+  select.mode <- mode == "selected"
+  # warn if histogram is for selected p-values that were never computed
+  if(select.mode && !select)
+    warning("No selected p-values present in object. Using raw p-values.")
+  
+  # get values of ...-arguments
   lst <- list(...)
   
+  # p-value type
+  pv.type <- ifelse(
+    test = select.mode, 
+    yes = ifelse(select, "Selected and Scaled", "Raw"),
+    no = "Raw"
+  )
+  
   # labels
-  if(!exists('main', where = lst)) lst$main <- "Histogram of raw p-values"
-  if(!exists('xlab', where = lst)) lst$xlab <- "Raw p-values"
+  if(!exists('main', where = lst))
+    lst$main <- paste("Histogram of", pv.type, "P-Values")
+  if(!exists('xlab', where = lst))
+    lst$xlab <- paste(pv.type, "P-Values")
   
   # add 'breaks' and 'plot' to 'lst' for 'do.call'
   lst$breaks <- breaks
-  lst$plot <- plot
-  lst$x <- x$Data$raw.pvalues
+  lst$x <- if(mode == "selected" && select)
+    x$Select$Scaled else
+      x$Data$Raw.pvalues
   
   # call 'hist'
-  r <- do.call(hist, lst)
+  fig <- do.call(hist, lst)
   
-  r$xname <- deparse(substitute(x))
+  # add input data variable name to result
+  fig$xname <- deparse(substitute(x))
   
-  if(plot) return(invisible(r)) else return(r)
+  # output
+  if(ifelse(exists('plot', lst), lst$plot, TRUE))
+    return(invisible(fig)) else
+      return(fig)
 }
 
 
@@ -148,7 +178,7 @@ plot.DiscreteFDR <- function(
   )
   
   # determine number of tests, selections and rejections
-  n <- length(x$Data$raw.pvalues)
+  n <- length(x$Data$Raw.pvalues)
   select <- exists('Select', x)
   m <- if(select) x$Select$Number else n
   
@@ -182,7 +212,7 @@ plot.DiscreteFDR <- function(
   }
   
   # start plotting with empty area
-  lst$x <- if(select) x$Select$Scaled else x$Data$raw.pvalues
+  lst$x <- if(select) x$Select$Scaled else x$Data$Raw.pvalues
   lst$col <- "NA"
   do.call(plot, lst)
   
@@ -196,7 +226,7 @@ plot.DiscreteFDR <- function(
   } else {
     idx <- setdiff(1:n, x$Indices)
     if(length(idx)) {
-      y_acc <- sort(x$Data$raw.pvalues[idx])
+      y_acc <- sort(x$Data$Raw.pvalues[idx])
       x_acc <- setdiff(seq_len(n), seq_len(x$Num.rejected))
     }
   }

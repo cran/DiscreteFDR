@@ -756,7 +756,7 @@ methods:</p>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 2 at global FDR level 0.05 </span></span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 0)</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02126871</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02126871</span></span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">summary</span>(DBH.sd.fast)</span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;   Discrete Benjamini-Hochberg procedure (step-down) </span></span>
@@ -765,7 +765,7 @@ methods:</p>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 2 at global FDR level 0.05 </span></span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 0)</span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02126871 </span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02126871 </span></span>
 <span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt;   Index    P.value   Adjusted Rejected</span></span>
 <span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; 1     4 0.01243145 0.03819796     TRUE</span></span>
@@ -892,8 +892,10 @@ obtained before and contains the results:</p>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="fu">all</span>(raw.pvalues <span class="sc">==</span> raw.pvalues<span class="fl">.2</span>) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(raw.pvalues <span class="sc">==</span> raw.pvalues<span class="fl">.3</span>)</span>
 <span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
 <span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="fu">p.adjust</span>(raw.pvalues, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; [1] 0.37430072 0.74976959 1.00000000 0.09570921 0.51928737 0.09570921 0.77313633</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; [8] 0.49804147 0.77313633</span></span></code></pre></div>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;          1          2          3          4          5          6          7 </span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 0.37430072 0.74976959 1.00000000 0.09570921 0.51928737 0.09570921 0.77313633 </span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt;          8          9 </span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 0.49804147 0.77313633</span></span></code></pre></div>
 <p>Applying the continuous BH procedure from the <strong>stats</strong>
 package in the last line of code, we find that we cannot reject any
 hypotheses at FDR-level <span class="math inline">\(\alpha =
@@ -934,6 +936,7 @@ or directly apply the function to the test results object itself:</p>
 <caption>Observed p-values and critical values</caption>
 <thead>
 <tr class="header">
+<th align="left"></th>
 <th align="right">raw.pvalues</th>
 <th align="right">crit.vals.BH.disc</th>
 <th align="right">crit.vals.BH.cont</th>
@@ -941,46 +944,55 @@ or directly apply the function to the test results object itself:</p>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">4</td>
 <td align="right">0.0124314</td>
 <td align="right">0.0124314</td>
 <td align="right">0.0055556</td>
 </tr>
 <tr class="even">
+<td align="left">6</td>
 <td align="right">0.0212687</td>
 <td align="right">0.0283245</td>
 <td align="right">0.0111111</td>
 </tr>
 <tr class="odd">
+<td align="left">1</td>
 <td align="right">0.1247669</td>
 <td align="right">0.0310960</td>
 <td align="right">0.0166667</td>
 </tr>
 <tr class="even">
+<td align="left">8</td>
 <td align="right">0.2213518</td>
 <td align="right">0.0483943</td>
 <td align="right">0.0222222</td>
 </tr>
 <tr class="odd">
+<td align="left">5</td>
 <td align="right">0.2884930</td>
 <td align="right">0.0501412</td>
 <td align="right">0.0277778</td>
 </tr>
 <tr class="even">
+<td align="left">2</td>
 <td align="right">0.4998464</td>
 <td align="right">0.0765706</td>
 <td align="right">0.0333333</td>
 </tr>
 <tr class="odd">
+<td align="left">9</td>
 <td align="right">0.6032954</td>
 <td align="right">0.0765706</td>
 <td align="right">0.0388889</td>
 </tr>
 <tr class="even">
+<td align="left">7</td>
 <td align="right">0.6872323</td>
 <td align="right">0.1032852</td>
 <td align="right">0.0444444</td>
 </tr>
 <tr class="odd">
+<td align="left">3</td>
 <td align="right">1.0000000</td>
 <td align="right">0.1032852</td>
 <td align="right">0.0500000</td>
@@ -1280,8 +1292,10 @@ distribution with parameter <span class="math inline">\(\lambda^0_i\)</span>. Th
 <span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; generated.</span></span>
 <span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>raw.pvalues<span class="fl">.2</span> <span class="ot">&lt;-</span> poisson.p<span class="sc">$</span><span class="fu">get_pvalues</span>()</span>
 <span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="fu">print</span>(raw.pvalues<span class="fl">.2</span>)</span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; [1] 0.023115288 0.120512901 0.503414696 0.373176876 0.080301397 0.001148481</span></span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; [7] 0.550671036 0.373176876 0.013458721</span></span></code></pre></div>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt;           1           2           3           4           5           6 </span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; 0.023115288 0.120512901 0.503414696 0.373176876 0.080301397 0.001148481 </span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt;           7           8           9 </span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt; 0.550671036 0.373176876 0.013458721</span></span></code></pre></div>
 <p>Following the definition of the function in <strong>R</strong> we
 define the inverse function of <span class="math inline">\(\overline{G_i}\)</span> by <span class="math display">\[\left(\overline{G_i}\right)^{-1}(p) = \min\{n \in
 \mathbb{N}: \overline{G_i}(n) \le  p\}\]</span> and obtain for the
@@ -1342,7 +1356,7 @@ convenient to work with <span class="math inline">\(n^{\tiny
 <span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 3 at global FDR level 0.05 </span></span>
 <span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 1)</span></span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02311529</span></span></code></pre></div>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02311529</span></span></code></pre></div>
 <p>We can also use the results object of
 <code>poisson.test.pv</code>:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>DBH.sd<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">DBH</span>(poisson.p, <span class="at">direction =</span> <span class="st">&quot;sd&quot;</span>, <span class="at">ret.crit.consts =</span> <span class="cn">TRUE</span>)</span>
@@ -1354,7 +1368,7 @@ convenient to work with <span class="math inline">\(n^{\tiny
 <span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 3 at global FDR level 0.05 </span></span>
 <span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 1)</span></span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02311529</span></span></code></pre></div>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02311529</span></span></code></pre></div>
 <p>Figure 3 shows a summary similar to Figure 1. Applying the continuous
 BH procedure</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">p.adjust</span>(raw.pvalues, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span>
@@ -1375,7 +1389,7 @@ procedure can reject three hypotheses:</p>
 <span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 3 at global FDR level 0.05 </span></span>
 <span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 1)</span></span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02311529</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02311529</span></span>
 <span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="fu">summary</span>(DBH.sd)</span>
 <span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a><span class="co">#&gt;   Discrete Benjamini-Hochberg procedure (step-down) </span></span>
@@ -1384,7 +1398,7 @@ procedure can reject three hypotheses:</p>
 <span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="co">#&gt; Number of tests = 9 </span></span>
 <span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="co">#&gt; Number of rejections = 3 at global FDR level 0.05 </span></span>
 <span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="co">#&gt; (Original BH rejections = 1)</span></span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="co">#&gt; Largest rejected p value:  0.02311529 </span></span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="co">#&gt; Largest rejected p-value:  0.02311529 </span></span>
 <span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a><span class="co">#&gt;   Index     P.value Critical.value    Adjusted Rejected</span></span>
 <span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a><span class="co">#&gt; 1     6 0.001148481    0.009079858 0.001935955     TRUE</span></span>
@@ -1501,7 +1515,7 @@ legend("topleft",inset=0.05, legend=c("raw p-values (sorted)",   "[A-DBH-SU]","[
 title(expression("NGS Disorder Detection: critical values for " ~  "FDR" <=0.05),line=1)
 ```
 
-<img src="/tmp/Rtmp5v3YoL/Rbuild5f9c287e3aa/DiscreteFDR/vignettes/DiscreteFDR_files/figure-html/plot-1.png" style="display: block; margin: auto;" />
+<img src="/tmp/RtmpbC2k2o/Rbuild61d22736fa37/DiscreteFDR/vignettes/DiscreteFDR_files/figure-html/plot-1.png" style="display: block; margin: auto;" />
 
 
 ``` r

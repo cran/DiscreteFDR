@@ -725,8 +725,10 @@ distribution with parameter <span class="math inline">\(\lambda^0_i\)</span>. Th
 poisson.p &lt;- poisson.test.pv(observations, lambda.vector, &quot;greater&quot;)
 raw.pvalues.2 &lt;- poisson.p$get_pvalues()
 print(raw.pvalues.2)</code></pre>
-<pre><code>## [1] 0.023115288 0.120512901 0.503414696 0.373176876 0.080301397 0.001148481
-## [7] 0.550671036 0.373176876 0.013458721</code></pre>
+<pre><code>##           1           2           3           4           5           6 
+## 0.023115288 0.120512901 0.503414696 0.373176876 0.080301397 0.001148481 
+##           7           8           9 
+## 0.550671036 0.373176876 0.013458721</code></pre>
 <p>Following the definition of the function in <strong>R</strong> we
 define the inverse function of <span class="math inline">\(\overline{G_i}\)</span> by <span class="math display">\[\left(\overline{G_i}\right)^{-1}(p) = \min\{n \in
 \mathbb{N}: \overline{G_i}(n) \le  p\}\]</span> and obtain for the
@@ -787,7 +789,7 @@ print(DBH.sd)</code></pre>
 ## Number of tests = 9 
 ## Number of rejections = 3 at global FDR level 0.05 
 ## (Original BH rejections = 1)
-## Largest rejected p value:  0.02311529</code></pre>
+## Largest rejected p-value:  0.02311529</code></pre>
 <p>We can also use the results object of
 <code>poisson.test.pv</code>:</p>
 <pre class="r"><code>DBH.sd.2 &lt;- DBH(poisson.p, direction = &quot;sd&quot;, ret.crit.consts = TRUE)
@@ -799,7 +801,7 @@ print(DBH.sd.2)</code></pre>
 ## Number of tests = 9 
 ## Number of rejections = 3 at global FDR level 0.05 
 ## (Original BH rejections = 1)
-## Largest rejected p value:  0.02311529</code></pre>
+## Largest rejected p-value:  0.02311529</code></pre>
 <p>Figure 3 shows a summary similar to Figure 1. Applying the continuous
 BH procedure</p>
 <pre class="r"><code>p.adjust(raw.pvalues, method = &quot;BH&quot;)</code></pre>
@@ -820,7 +822,7 @@ procedure can reject three hypotheses:</p>
 ## Number of tests = 9 
 ## Number of rejections = 3 at global FDR level 0.05 
 ## (Original BH rejections = 1)
-## Largest rejected p value:  0.02311529</code></pre>
+## Largest rejected p-value:  0.02311529</code></pre>
 <pre class="r"><code>summary(DBH.sd)</code></pre>
 <pre><code>## 
 ##   Discrete Benjamini-Hochberg procedure (step-down) 
@@ -829,7 +831,7 @@ procedure can reject three hypotheses:</p>
 ## Number of tests = 9 
 ## Number of rejections = 3 at global FDR level 0.05 
 ## (Original BH rejections = 1)
-## Largest rejected p value:  0.02311529 
+## Largest rejected p-value:  0.02311529 
 ## 
 ##   Index     P.value Critical.value    Adjusted Rejected
 ## 1     6 0.001148481    0.009079858 0.001935955     TRUE
@@ -947,7 +949,7 @@ legend("topleft",inset=0.05, legend=c("raw p-values (sorted)",   "[A-DBH-SU]","[
 title(expression("NGS Disorder Detection: critical values for " ~  "FDR" <=0.05),line=1)
 ```
 
-<img src="/tmp/Rtmp5v3YoL/Rbuild5f9c287e3aa/DiscreteFDR/vignettes/furtheranalyses_files/figure-html/plot-1.png" width="672" />
+<img src="/tmp/RtmpbC2k2o/Rbuild61d22736fa37/DiscreteFDR/vignettes/furtheranalyses_files/figure-html/plot-1.png" width="672" />
 
 
 ``` r

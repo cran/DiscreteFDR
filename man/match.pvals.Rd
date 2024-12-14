@@ -7,11 +7,11 @@
 match.pvals(test.results, pCDFlist, pCDFlist.indices = NULL)
 }
 \arguments{
-\item{test.results}{either a numeric vector with p-values or an R6 object of class \code{\link[DiscreteTests]{DiscreteTestResults}} from package \link[DiscreteTests]{DiscreteTests} for which a discrete FDR procedure is to be performed.}
+\item{test.results}{either a numeric vector with \eqn{p}-values or an R6 object of class \code{\link[DiscreteTests]{DiscreteTestResults}} from package \link[DiscreteTests]{DiscreteTests} for which a discrete FDR procedure is to be performed.}
 
-\item{pCDFlist}{list of the supports of the CDFs of the p-values; each list item must be a numeric vector, which is sorted in increasing order and whose last element equals 1.}
+\item{pCDFlist}{list of the supports of the CDFs of the \eqn{p}-values; each list item must be a numeric vector, which is sorted in increasing order and whose last element equals 1.}
 
-\item{pCDFlist.indices}{list of numeric vectors containing the test indices that indicate to which raw p-value each \strong{unique} support in \code{pCDFlist} belongs; ignored if the lengths of \code{test.results} and \code{pCDFlist} are equal.}
+\item{pCDFlist.indices}{list of numeric vectors containing the test indices that indicate to which raw \eqn{p}-value each \strong{unique} support in \code{pCDFlist} belongs; ignored if the lengths of \code{test.results} and \code{pCDFlist} are equal.}
 }
 \value{
 A vector where each raw p-value has been replaced by its nearest neighbor, if
@@ -32,16 +32,6 @@ support. So this function is called at the beginning of \code{\link[=discrete.BH
 \code{\link[=DBH]{DBH()}}, \code{\link[=ADBH]{ADBH()}} and \code{\link[=DBR]{DBR()}}, just in case raw p-values are biased.
 
 For each raw p-value that needs to be rounded, a warning is issued.
-}
-\examples{
-\dontrun{
-toyList <- list(c(0.3,0.7,1),c(0.1,0.65,1))
-toyRaw1 <- c(0.3,0.65)
-match.pvals(toyRaw1, toyList)
-toyRaw2 <- c(0.31,0.6)
-match.pvals(toyRaw2, toyList)
-}
-
 }
 \seealso{
 \code{\link[=discrete.BH]{discrete.BH()}}, \code{\link[=DBR]{DBR()}}

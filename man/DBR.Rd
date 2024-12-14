@@ -29,11 +29,11 @@ DBR(test.results, ...)
 )
 }
 \arguments{
-\item{test.results}{either a numeric vector with p-values or an R6 object of class \code{\link[DiscreteTests]{DiscreteTestResults}} from package \link[DiscreteTests]{DiscreteTests} for which a discrete FDR procedure is to be performed.}
+\item{test.results}{either a numeric vector with \eqn{p}-values or an R6 object of class \code{\link[DiscreteTests]{DiscreteTestResults}} from package \link[DiscreteTests]{DiscreteTests} for which a discrete FDR procedure is to be performed.}
 
 \item{...}{further arguments to be passed to or from other methods. They are ignored here.}
 
-\item{pCDFlist}{list of the supports of the CDFs of the p-values; each list item must be a numeric vector, which is sorted in increasing order and whose last element equals 1.}
+\item{pCDFlist}{list of the supports of the CDFs of the \eqn{p}-values; each list item must be a numeric vector, which is sorted in increasing order and whose last element equals 1.}
 
 \item{alpha}{single real number strictly between 0 and 1 indicating the target FDR level.}
 
@@ -41,9 +41,9 @@ DBR(test.results, ...)
 
 \item{ret.crit.consts}{single boolean specifying whether critical constants are to be computed.}
 
-\item{select.threshold}{single real number strictly between 0 and 1 indicating the largest raw p-value to be considered, i.e. only p-values below this threshold are considered and the procedures are adjusted in order to take this selection effect into account; if \code{threshold = 1} (the default), all raw p-values are selected.}
+\item{select.threshold}{single real number strictly between 0 and 1 indicating the largest raw \eqn{p}-value to be considered, i.e. only \eqn{p}-values below this threshold are considered and the procedures are adjusted in order to take this selection effect into account; if \code{threshold = 1} (the default), all raw \eqn{p}-values are selected.}
 
-\item{pCDFlist.indices}{list of numeric vectors containing the test indices that indicate to which raw p-value each \strong{unique} support in \code{pCDFlist} belongs; ignored if the lengths of \code{test.results} and \code{pCDFlist} are equal.}
+\item{pCDFlist.indices}{list of numeric vectors containing the test indices that indicate to which raw \eqn{p}-value each \strong{unique} support in \code{pCDFlist} belongs; ignored if the lengths of \code{test.results} and \code{pCDFlist} are equal.}
 }
 \value{
 A \code{DiscreteFDR} S3 class object whose elements are:
@@ -52,6 +52,13 @@ A \code{DiscreteFDR} S3 class object whose elements are:
 \item{Num.rejected}{number of rejections.}
 \item{Adjusted}{adjusted \eqn{p}-values.}
 \item{Critical.constants}{critical values (only exists if computations where performed with \code{ret.crit.consts = TRUE}).}
+\item{Data}{list with input data.}
+\item{Data$Method}{character string describing the used algorithm, e.g. 'Discrete Benjamini-Hochberg procedure (step-up)'}
+\item{Data$Raw.pvalues}{observed \eqn{p}-values.}
+\item{Data$pCDFlist}{list of the \eqn{p}-value supports.}
+\item{Data$FDR.level}{FDR level \code{alpha}.}
+\item{Data$DBR.Tuning}{value of the tuning parameter \code{lambda}.}
+\item{Data$Data.name}{the respective variable names of the input data.}
 \item{Select}{list with data related to \eqn{p}-value selection; only exists if \code{select.threshold < 1}.}
 \item{Select$Threshold}{\eqn{p}-value selection threshold (\code{select.threshold}).}
 \item{Select$Effective.Thresholds}{results of each \eqn{p}-value CDF evaluated at the selection threshold.}
@@ -59,13 +66,6 @@ A \code{DiscreteFDR} S3 class object whose elements are:
 \item{Select$Indices}{indices of \eqn{p}-values \eqn{\leq} selection threshold.}
 \item{Select$Scaled}{scaled selected \eqn{p}-values.}
 \item{Select$Number}{number of selected \eqn{p}-values \eqn{\leq} selection threshold.}
-\item{Data}{list with input data.}
-\item{Data$Method}{character string describing the used algorithm, e.g. 'Discrete Benjamini-Hochberg procedure (step-up)'}
-\item{Data$Raw.pvalues}{observed \eqn{p}-values.}
-\item{Data$pCDFlist}{list of the \eqn{p}-value supports.}
-\item{Data$FDR.level}{FDR level \code{alpha}.}
-\item{Data$Data.name}{the respective variable names of the input data.}
-\item{DBR.Tuning}{value of the tuning parameter \code{lambda}.}
 }
 \description{
 Applies the [HBR-\eqn{\lambda}] procedure, with or without computing the
@@ -81,16 +81,9 @@ which explains the choice of the default value here.
 Computing critical constants (\code{ret.crit.consts = TRUE}) requires considerably
 more execution time, especially if the number of unique supports is large.
 We recommend that users should only have them calculated when they need them,
-e.g. for illustrating the rejection area in a plot or other theoretical
+e.g. for illustrating the rejection set in a plot or other theoretical
 reasons.
 }
-\section{References}{
-
-G. Blanchard and E. Roquain (2009). Adaptive false discovery rate control
-under independence and dependence. \emph{Journal of Machine Learning Research},
-\emph{10}, pp. 2837-2871.
-}
-
 \examples{
 X1 <- c(4, 2, 2, 14, 6, 9, 4, 0, 1)
 X2 <- c(0, 0, 1, 3, 2, 1, 2, 2, 2)
@@ -106,15 +99,21 @@ test.result <- generate.pvalues(df, "fisher")
 raw.pvalues <- test.result$get_pvalues()
 pCDFlist <- test.result$get_pvalue_supports()
 
-# DBR without critical values; using extracted p-values and supports
-DBR.fast <- DBR(raw.pvalues, pCDFlist)
+# DBR without critical values; using test results object
+DBR.fast <- DBR(test.result)
 summary(DBR.fast)
 
-# DBR with critical values; using test results
-DBR.crit <- DBR(test.result, ret.crit.consts = TRUE)
+# DBR with critical values; using extracted p-values and supports
+DBR.crit <- DBR(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
 summary(DBR.crit)
 
 }
+\references{
+:
+G. Blanchard and E. Roquain (2009). Adaptive false discovery rate control
+under independence and dependence. \emph{Journal of Machine Learning Research},
+\emph{10}, pp. 2837-2871. \doi{10.48550/arXiv.0707.0536}
+}
 \seealso{
-\code{\link[=discrete.BH]{discrete.BH()}}, \code{\link[=DBH]{DBH()}}, \code{\link[=ADBH]{ADBH()}}
+\code{\link[=discrete.BH]{discrete.BH()}}, \code{\link[=DBH]{DBH()}}, \code{\link[=ADBH]{ADBH()}}, \code{\link[=DBY]{DBY()}}
 }

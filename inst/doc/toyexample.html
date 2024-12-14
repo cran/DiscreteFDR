@@ -493,7 +493,7 @@ methods:</p>
 ## Number of tests = 9 
 ## Number of rejections = 2 at global FDR level 0.05 
 ## (Original BH rejections = 0)
-## Largest rejected p value:  0.02126871</code></pre>
+## Largest rejected p-value:  0.02126871</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">summary</span>(DBH.sd.fast)</span></code></pre></div>
 <pre><code>## 
 ##   Discrete Benjamini-Hochberg procedure (step-down) 
@@ -502,7 +502,7 @@ methods:</p>
 ## Number of tests = 9 
 ## Number of rejections = 2 at global FDR level 0.05 
 ## (Original BH rejections = 0)
-## Largest rejected p value:  0.02126871 
+## Largest rejected p-value:  0.02126871 
 ## 
 ##   Index    P.value   Adjusted Rejected
 ## 1     4 0.01243145 0.03819796     TRUE
@@ -624,8 +624,10 @@ obtained before and contains the results:</p>
 <span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="fu">all</span>(raw.pvalues <span class="sc">==</span> raw.pvalues<span class="fl">.2</span>) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(raw.pvalues <span class="sc">==</span> raw.pvalues<span class="fl">.3</span>)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">p.adjust</span>(raw.pvalues, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 0.37430072 0.74976959 1.00000000 0.09570921 0.51928737 0.09570921 0.77313633
-## [8] 0.49804147 0.77313633</code></pre>
+<pre><code>##          1          2          3          4          5          6          7 
+## 0.37430072 0.74976959 1.00000000 0.09570921 0.51928737 0.09570921 0.77313633 
+##          8          9 
+## 0.49804147 0.77313633</code></pre>
 <p>Applying the continuous BH procedure from the <strong>stats</strong>
 package in the last line of code, we find that we cannot reject any
 hypotheses at FDR-level <span class="math inline">\(\alpha =
@@ -666,6 +668,7 @@ or directly apply the function to the test results object itself:</p>
 <caption>Observed p-values and critical values</caption>
 <thead>
 <tr class="header">
+<th align="left"></th>
 <th align="right">raw.pvalues</th>
 <th align="right">crit.vals.BH.disc</th>
 <th align="right">crit.vals.BH.cont</th>
@@ -673,46 +676,55 @@ or directly apply the function to the test results object itself:</p>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">4</td>
 <td align="right">0.0124314</td>
 <td align="right">0.0124314</td>
 <td align="right">0.0055556</td>
 </tr>
 <tr class="even">
+<td align="left">6</td>
 <td align="right">0.0212687</td>
 <td align="right">0.0283245</td>
 <td align="right">0.0111111</td>
 </tr>
 <tr class="odd">
+<td align="left">1</td>
 <td align="right">0.1247669</td>
 <td align="right">0.0310960</td>
 <td align="right">0.0166667</td>
 </tr>
 <tr class="even">
+<td align="left">8</td>
 <td align="right">0.2213518</td>
 <td align="right">0.0483943</td>
 <td align="right">0.0222222</td>
 </tr>
 <tr class="odd">
+<td align="left">5</td>
 <td align="right">0.2884930</td>
 <td align="right">0.0501412</td>
 <td align="right">0.0277778</td>
 </tr>
 <tr class="even">
+<td align="left">2</td>
 <td align="right">0.4998464</td>
 <td align="right">0.0765706</td>
 <td align="right">0.0333333</td>
 </tr>
 <tr class="odd">
+<td align="left">9</td>
 <td align="right">0.6032954</td>
 <td align="right">0.0765706</td>
 <td align="right">0.0388889</td>
 </tr>
 <tr class="even">
+<td align="left">7</td>
 <td align="right">0.6872323</td>
 <td align="right">0.1032852</td>
 <td align="right">0.0444444</td>
 </tr>
 <tr class="odd">
+<td align="left">3</td>
 <td align="right">1.0000000</td>
 <td align="right">0.1032852</td>
 <td align="right">0.0500000</td>

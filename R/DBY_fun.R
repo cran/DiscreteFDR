@@ -1,102 +1,65 @@
-#' @name discrete.BH
+#' @name DBY
 #' 
 #' @title
-#' The Discrete Benjamini-Hochberg Procedure
+#' The Discrete Benjamini-Yekutieli Procedure
 #' 
 #' @description
-#' Applies the \[HSU\], \[HSD\], \[AHSU\] and \[AHSD\] procedures at a given FDR
-#' level, with or without computing the critical constants, to a set of p-values
-#' and their respective discrete supports.
+#' Applies the Discrete Benjamini-Yekutieli procedure, with or without computing
+#' the critical constants, to a set of \eqn{p}-values and their respective
+#' discrete supports.
 #' 
-#' @details
-#' The adaptive variants \[AHSU\] and \[AHSD\], which are executed via
-#' `adaptive = TRUE`, are often slightly more powerful than \[HSU\] and \[HSD\],
-#' respectively. But they are also computationally more demanding.
-#' @template details_crit
+#' @template details_crit 
 #' 
+#' @references
+#' Döhler, S. (2018). A discrete modification of the Benjamini–Yekutieli
+#'   procedure. *Econometrics and Statistics*, *5*, pp. 137-147.
+#'    \doi{10.1016/j.ecosta.2016.12.002}
+#'
 #' @seealso
-#' [`DBH()`], [`ADBH()`], [`DBR()`], [`DBY()`]
+#' [`discrete.BH()`], [`DBH()`], [`ADBH()`], [`DBR()`]
 #' 
 #' @templateVar test.results TRUE
 #' @templateVar pCDFlist TRUE
+#' @templateVar test.results TRUE
 #' @templateVar alpha TRUE
-#' @templateVar direction TRUE
-#' @templateVar adaptive TRUE
 #' @templateVar ret.crit.consts TRUE
 #' @templateVar select.threshold TRUE
 #' @templateVar pCDFlist.indices TRUE
 #' @templateVar triple.dots TRUE
 #' @template param
 #' 
-#' @templateVar DBR FALSE
 #' @template return
 #' 
-#' @references
-#' Döhler, S., Durand, G., & Roquain, E. (2018). New FDR bounds for discrete
-#'   and heterogeneous tests. *Electronic Journal of Statistics*, *12*(1),
-#'   pp. 1867-1900. \doi{10.1214/18-EJS1441}
-#'   
 #' @template exampleGPV
 #' @examples
-#' # DBH (step-up) without critical values; using test results object
-#' DBH.su.fast <- discrete.BH(test.result)
-#' summary(DBH.su.fast)
+#' # DBY without critical values; using test results object
+#' DBY.fast <- DBY(test.result)
+#' summary(DBY.fast)
 #' 
-#' # DBH (step-down) without critical values; using extracted p-values
-#' # and supports
-#' DBH.sd.fast <- discrete.BH(raw.pvalues, pCDFlist, direction = "sd")
-#' summary(DBH.sd.fast)
-#' 
-#' # DBH (step-up) with critical values; using extracted p-values and supports
-#' DBH.su.crit <- discrete.BH(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
-#' summary(DBH.su.crit)
-#' 
-#' # DBH (step-down) with critical values; using test results object
-#' DBH.sd.crit <- discrete.BH(test.result, direction = "sd",
-#'                            ret.crit.consts = TRUE)
-#' summary(DBH.sd.crit)
-#' 
-#' # ADBH (step-up) without critical values; using test results object
-#' ADBH.su.fast <- discrete.BH(test.result, adaptive = TRUE)
-#' summary(ADBH.su.fast)
-#' 
-#' # ADBH (step-down) without critical values; using extracted p-values
-#' # and supports
-#' ADBH.sd.fast <- discrete.BH(raw.pvalues, pCDFlist, direction = "sd",
-#'                              adaptive = TRUE)
-#' summary(ADBH.sd.fast)
-#' 
-#' # ADBH (step-up) with critical values; using extracted p-values and supports
-#' ADBH.su.crit <- discrete.BH(raw.pvalues, pCDFlist, adaptive = TRUE,
-#'                             ret.crit.consts = TRUE)
-#' summary(ADBH.su.crit)
-#' 
-#' # ADBH (step-down) with critical values; using test results object
-#' ADBH.sd.crit <- discrete.BH(test.result, direction = "sd", adaptive = TRUE,
-#'                             ret.crit.consts = TRUE)
-#' summary(ADBH.sd.crit)
+#' # DBY with critical values; using extracted p-values and supports
+#' DBY.crit <- DBY(raw.pvalues, pCDFlist, ret.crit.consts = TRUE)
+#' summary(DBY.crit)
 #' 
 #' @export
-discrete.BH <- function(test.results, ...) UseMethod("discrete.BH")
+DBY <- function(test.results, ...) UseMethod("DBY")
 
-#' @rdname discrete.BH
+#' @rdname DBY
 #' @importFrom checkmate assert_character assert_integerish assert_numeric
 #' @importFrom checkmate assert_list qassert
 #' @export
-discrete.BH.default <- function(
+DBY.default <- function(
   test.results,
   pCDFlist,
   alpha = 0.05,
-  direction = "su",
-  adaptive = FALSE,
   ret.crit.consts = FALSE,
   select.threshold = 1,
   pCDFlist.indices = NULL, 
   ...
 ) {
-  #----------------------------------------------------
+  # check arguments
+  #--------------------------------------------
   #       check arguments
-  #----------------------------------------------------
+  #--------------------------------------------
   # raw p-values
   qassert(x = test.results, rules = "N+[0, 1]")
   n <- length(test.results)
@@ -110,7 +73,7 @@ discrete.BH.default <- function(
     max.len = n
   )
   # individual p-value distributions
-  for(i in seq_along(pCDFlist)){
+  for(i in seq_along(pCDFlist)) {
     assert_numeric(
       x = pCDFlist[[i]],
       lower = 0,
@@ -119,25 +82,13 @@ discrete.BH.default <- function(
       min.len = 1,
       sorted = TRUE
     )
-    #if(max(pCDFlist[[i]]) != 1)
-    #  stop("Last value of each vector in 'pCDFlist' must be 1!")
+    if(max(pCDFlist[[i]]) != 1)
+      stop("Last value of each vector in 'pCDFlist' must be 1!")
   }
   m <- length(pCDFlist)
   
   # significance level
   qassert(x = alpha, rules = "N1(0, 1]")
-  
-  # step-up/step-down direction
-  assert_character(
-    x = direction,
-    n.chars = 2,
-    len = 1,
-    any.missing = FALSE
-  )
-  direction <- match.arg(tolower(direction), c("su", "sd"))
-  
-  # adaptiveness
-  qassert(adaptive, "B1")
   
   # compute and return critical values?
   qassert(ret.crit.consts, "B1")
@@ -156,10 +107,10 @@ discrete.BH.default <- function(
   )
   # individual index vectors (if not NULL)
   if(is.null(pCDFlist.indices)) {
-    if(n != m){
+    if(n != m) {
       stop(
         paste(
-          "If no indices for the p-value CDFs are provided, the lengths of",
+          "If no counts for the p-value CDFs are provided, the lengths of",
           "'test.results' and 'pCDFlist' must be equal!"
         )
       )
@@ -168,7 +119,7 @@ discrete.BH.default <- function(
     pCDFlist.counts <- rep(1, n)
   } else {
     set <- seq_len(n)
-    for(i in seq_along(pCDFlist.indices)){
+    for(i in seq_along(pCDFlist.indices)) {
       pCDFlist.indices[[i]] <- assert_integerish(
         x = pCDFlist.indices[[i]],
         lower = 1,
@@ -199,9 +150,9 @@ discrete.BH.default <- function(
     pvec             = pvec,
     pCDFlist         = pCDFlist,
     pCDFlist.indices = pCDFlist.indices,
-    method           = ifelse(adaptive, "ADBH", "DBH"),
+    method           = "DBY",
     alpha            = alpha,
-    method.parameter = (direction == "su"),
+    method.parameter = NULL,
     crit.consts      = ret.crit.consts,
     threshold        = select.threshold,
     data.name        = paste(
@@ -214,14 +165,12 @@ discrete.BH.default <- function(
   return(output)
 }
 
-#' @rdname discrete.BH
+#' @rdname DBY
 #' @importFrom checkmate assert_character assert_r6 qassert
 #' @export
-discrete.BH.DiscreteTestResults <- function(
+DBY.DiscreteTestResults <- function(
   test.results,
   alpha = 0.05,
-  direction = "su",
-  adaptive = FALSE,
   ret.crit.consts = FALSE,
   select.threshold = 1, 
   ...
@@ -239,18 +188,6 @@ discrete.BH.DiscreteTestResults <- function(
   # significance level
   qassert(x = alpha, rules = "N1(0, 1]")
   
-  # step-up/step-down direction
-  assert_character(
-    x = direction,
-    n.chars = 2,
-    len = 1,
-    any.missing = FALSE
-  )
-  direction <- match.arg(tolower(direction), c("su", "sd"))
-  
-  # adaptiveness
-  qassert(adaptive, "B1")
-  
   # compute and return critical values?
   qassert(ret.crit.consts, "B1")
   
@@ -264,9 +201,9 @@ discrete.BH.DiscreteTestResults <- function(
     pvec             = test.results$get_pvalues(),
     pCDFlist         = test.results$get_pvalue_supports(unique = TRUE),
     pCDFlist.indices = test.results$get_support_indices(),
-    method           = ifelse(adaptive, "ADBH", "DBH"),
+    method           = "DBY",
     alpha            = alpha,
-    method.parameter = (direction == "su"),
+    method.parameter = NULL,
     crit.consts      = ret.crit.consts,
     threshold        = select.threshold,
     data.name        = deparse(substitute(test.results))

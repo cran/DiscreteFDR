@@ -28,7 +28,7 @@ raw.pvalues <- fisher.p$get_pvalues()
 
 # or
 library(DiscreteTests)
-fisher.p.2 <- fisher.test.pv(df, "two.sided")
+fisher.p.2 <- fisher_test_pv(df, "two.sided")
 raw.pvalues.2 <- fisher.p.2$get_pvalues()
 
 # or:
@@ -56,7 +56,7 @@ all(crit.vals.BH.disc == crit.vals.BH.disc.2)
 
 ## ----toy-example-pipe---------------------------------------------------------
 df |>
-  fisher.test.pv(alternative = "two.sided") |>
+  fisher_test_pv(alternative = "two.sided") |>
   DBH(0.05, "sd", TRUE) |>
   with(Critical.values)
 

@@ -2,8 +2,8 @@ Package: DiscreteFDR
 Type: Package
 Title: FDR Based Multiple Testing Procedures with Adaptation for
         Discrete Tests
-Version: 2.1.0
-Date: 2024-12-14
+Version: 2.1.1
+Date: 2026-02-13
 Authors@R: c(
     person("Sebastian", "Döhler", role = c("aut", "ctb"),
            email = "sebastian.doehler@h-da.de",
@@ -36,14 +36,17 @@ Suggests: rmarkdown, knitr, R.rsp, kableExtra
 VignetteBuilder: knitr, R.rsp
 URL: https://github.com/DISOhda/DiscreteFDR
 BugReports: https://github.com/DISOhda/DiscreteFDR/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 NeedsCompilation: yes
-Packaged: 2024-12-14 14:29:51 UTC; fjunge
-Author: Sebastian Döhler [aut, ctb] (<https://orcid.org/0000-0002-0321-6355>),
-  Florian Junge [aut, ctb, cre] (<https://orcid.org/0009-0001-6856-6938>),
-  Guillermo Durand [aut, ctb] (<https://orcid.org/0000-0003-4056-5631>),
+Packaged: 2026-02-13 09:26:03 UTC; fjunge
+Author: Sebastian Döhler [aut, ctb] (ORCID:
+    <https://orcid.org/0000-0002-0321-6355>),
+  Florian Junge [aut, ctb, cre] (ORCID:
+    <https://orcid.org/0009-0001-6856-6938>),
+  Guillermo Durand [aut, ctb] (ORCID:
+    <https://orcid.org/0000-0003-4056-5631>),
   Etienne Roquain [ctb],
   Christina Kihn [ctb]
 Maintainer: Florian Junge <diso.fbmn@h-da.de>
 Repository: CRAN
-Date/Publication: 2024-12-14 14:50:02 UTC
+Date/Publication: 2026-02-13 10:40:08 UTC

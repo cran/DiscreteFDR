@@ -9,7 +9,7 @@ library(DiscreteDatasets)
 library(DiscreteTests)
 amnesia.formatted <- amnesia |>
   reconstruct_two() |>
-  fisher.test.pv(alternative = "greater")
+  fisher_test_pv(alternative = "greater")
 
 ## ----DFDR-Pharmacovigilance---------------------------------------------------
 DBH.su  <-  DBH(amnesia.formatted, ret.crit.consts = TRUE)
@@ -57,7 +57,7 @@ print(configuration)
 
 ## ----Poisson-RawPValues-------------------------------------------------------
 raw.pvalues <- ppois(observations - 1, lambda.vector, lower.tail = FALSE)
-poisson.p <- poisson.test.pv(observations, lambda.vector, "greater")
+poisson.p <- poisson_test_pv(observations, lambda.vector, "greater")
 raw.pvalues.2 <- poisson.p$get_pvalues()
 print(raw.pvalues.2)
 
